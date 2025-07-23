@@ -6,8 +6,6 @@ import Divider from '@mui/material/Divider';
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
 import CardContent from '@mui/material/CardContent';
-//import { updatePassword, updateProfile, updateEmail, verifyBeforeUpdateEmail, updatePhoneNumber, } from 'firebase/auth';
-//import { updateDoc } from 'firebase/firestore';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';

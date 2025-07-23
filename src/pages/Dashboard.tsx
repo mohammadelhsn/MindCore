@@ -344,8 +344,8 @@ const Dashboard = () => {
                 <Fab color="primary" aria-label="add" onClick={() => navigate('/newEntry')}
                     sx={{
                         '&:hover .spin-icon': {
-                            transform: 'rotate(360deg) scale(1.2)',
-                            transition: 'transform 1s ease',
+                            transform: 'rotate(180deg) scale(1.2)',
+                            transition: 'transform 0.3s ease',
                         },
                         transition: '0.3s ease',
                         '&:hover': {
@@ -354,7 +354,7 @@ const Dashboard = () => {
                     }}
                 >
                     <Add className="spin-icon" sx={{
-                        transition: 'transform 1s ease',
+                        transition: 'transform 0.8s ease',
                         transformOrigin: 'center',
                     }} />
                 </Fab>

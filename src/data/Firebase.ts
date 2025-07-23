@@ -7,7 +7,7 @@ import { type NavigateFunction } from 'react-router-dom';
 
 /** ======= TYPES ======= */
 
-import type { AuthProvider, GoogleAuthProvider } from 'firebase/auth';
+import type { AuthProvider } from 'firebase/auth';
 
 type setLoading = (value: React.SetStateAction<boolean>) => void;
 type setError = (value: React.SetStateAction<string | null>) => void;

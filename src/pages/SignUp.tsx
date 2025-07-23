@@ -5,7 +5,7 @@ import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import { Alert, Snackbar, useTheme } from '@mui/material';
 import { useContext, useEffect, useState } from 'react';
-import { GithubAuthProvider, GoogleAuthProvider } from 'firebase/auth';
+import { GithubAuthProvider, GoogleAuthProvider, FacebookAuthProvider } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../contexts/AuthContext';
 import { handleProviderSignUp } from '../data/Firebase';
@@ -20,6 +20,7 @@ const SignUpPage = () => {
     const navigate = useNavigate();
     const googleProvider = new GoogleAuthProvider();
     const githubProvider = new GithubAuthProvider();
+    const facebookProvider = new FacebookAuthProvider();
     useEffect(() => {
         if (user) {
             navigate('/dashboard');
@@ -107,6 +108,28 @@ const SignUpPage = () => {
                         }}
                     >
                         Sign Up with GitHub
+                    </Button>
+                    <Button
+                        variant='outlined'
+                        onClick={() => {
+                            setLoadingUser(true);
+                            handleProviderSignUp(facebookProvider, navigate, setError, setLoadingPage, setLoadingUser);
+                        }}
+                        startIcon={<img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/facebook.svg" alt="Facebook" width={20} />}
+                        loading={loadingUser}
+                        sx={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            transition: '0.3s ease',
+                            '&:hover': {
+                                transform: 'scale(1.02)',
+                                bgcolor: palette.primary.light,
+                                color: palette.text.primary,
+                            }
+                        }}
+                    >
+                        Sign Up with Facebook
                     </Button>
                 </Box>
             </Card>

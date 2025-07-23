@@ -28,7 +28,7 @@ const LearnPage = () => {
                     </CardContent>
                 </Card>
             </Box>
-            <Box sx={{ my: 4 }}>
+            <Box my={4}>
                 <Card>
                     <CardHeader title="What is Anxiety?" />
                     <CardContent>
