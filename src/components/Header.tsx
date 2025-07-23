@@ -20,19 +20,11 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import Settings from '@mui/icons-material/Settings';
 import Logout from '@mui/icons-material/Logout';
 import PsychologyIcon from '@mui/icons-material/Psychology';
-//import LoginIcon from '@mui/icons-material/Login';
-//import Button from '@mui/material/Button';
+import LoginIcon from '@mui/icons-material/Login';
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
 
-// import IconButton from '@mui/material/IconButton';
 import Box from '@mui/material/Box';
 import { styled } from '@mui/material/styles';
-// import Link from '@mui/material/Link';
-// import { auth } from '../data/Firebase';
-
-// Icons 
-
-// import DarkModeIcon from '@mui/icons-material/DarkModeOutlined';
-// import LightModeIcon from '@mui/ico//ns-material/LightModeOutlined';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../contexts/AuthContext';
 import { signOut } from 'firebase/auth';
@@ -41,7 +33,7 @@ import { auth } from '../data/Firebase';
 const StyledExternalLink = styled(NavLink)(({ theme }) => ({
     color: 'inherit',
     textDecoration: 'none',
-    marginRight: theme.spacing(2),
+    marginRight: theme.spacing(1),
     fontWeight: 'normal',
     display: 'inline-flex',
     alignItems: 'center',
@@ -70,21 +62,31 @@ const Header = () => {
             }}
         >
             <Toolbar>
-                <PsychologyIcon sx={{ mr: 1 }} />
                 <StyledExternalLink to="/">
-                    <Button color="inherit" variant="text">
-                        Home
-                    </Button>
+                    <Tooltip title="Go Home">
+                        <PsychologyIcon />
+                    </Tooltip>
                 </StyledExternalLink>
+                <Divider orientation='vertical' sx={{
+                    borderColor: 'white',
+                    borderWidth: '1px',
+                    borderStyle: 'solid',
+                    height: 20,    // set height explicitly
+                    mr: 1,         // horizontal margin to add space left and right
+                }} />
                 <StyledExternalLink to="/dashboard">
-                    <Button color="inherit" variant="text">
-                        Dashboard
-                    </Button>
+                    <Tooltip title="View Dashboard">
+                        <Button color="inherit" variant="text">
+                            Dashboard
+                        </Button>
+                    </Tooltip>
                 </StyledExternalLink>
                 <StyledExternalLink to="/learn">
-                    <Button color="inherit" variant='text'>
-                        Learn
-                    </Button>
+                    <Tooltip title="Learn">
+                        <Button color="inherit" variant='text'>
+                            Learn
+                        </Button>
+                    </Tooltip>
                 </StyledExternalLink>
                 <Typography sx={{
                     flexGrow: 1,
@@ -92,12 +94,12 @@ const Header = () => {
                 {!user &&
                     <Box>
                         <StyledExternalLink to="/login">
-                            <Button color="inherit" variant='contained'>
-                                Login
+                            <Button color='inherit' variant='contained' startIcon={<LoginIcon fontSize={'small'} />}>
+                                Log In
                             </Button>
                         </StyledExternalLink>
                         <StyledExternalLink to="/signup">
-                            <Button color="inherit" variant='contained'>
+                            <Button color="inherit" variant='contained' startIcon={<PersonAddIcon fontSize='small' />}>
                                 Sign Up
                             </Button>
                         </StyledExternalLink>

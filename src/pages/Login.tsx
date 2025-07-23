@@ -5,69 +5,53 @@ import Container from "@mui/material/Container";
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
-import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
+import { Snackbar } from '@mui/material';
+import Alert from '@mui/material/Alert';
 
 /** REACT */
 
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 /** FIREBASE */
 
-import { GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
-import { auth } from '../data/Firebase';
+import { GoogleAuthProvider, GithubAuthProvider } from 'firebase/auth';
 import { AuthContext } from '../contexts/AuthContext';
+import { handleProviderSignIn } from '../data/Firebase';
+import { useTheme } from '@mui/material';
 
 /** LOGIN */
 
 const LogIn = () => {
     const { user } = useContext(AuthContext);
-    /** STATES */
-
-    /** EMAIL */
-    const [email, setEmail] = useState('');
-    const [emailError, setEmailError] = useState<string | null>(null);
-
-    /** PASSWORD */
-    const [password, setPassword] = useState('');
-    const [passwordError, setPasswordError] = useState<string | null>(null);
-
-    /** NAVIGATION */
+    const { palette } = useTheme();
+    const [error, setError] = useState<string | null>(null);
+    /**
+     * @description Controls the loading state of the page
+     * @deprecated ?? What is the purpose of this
+     */
+    const [loadingPage, setLoadingPage] = useState<boolean>(true);
+    /** 
+     * @description Controls the loading state of the button for Google
+     */
+    const [loadingG, setLoadingG] = useState<boolean>(false);
+    /**
+     * @description Controls the loading state of the button for GitHub
+     */
+    const [loadingGH, setLoadingGH] = useState<boolean>(false);
     const navigate = useNavigate();
-
-    /** IF THERE IS ALREADY A USER, THERE IS NO NEED FOR THEM TO BE ABLE TO SEE THE LOGIN PAGE*/
-    if (user) {
-        navigate('/dashboard');
-    }
-
-    /** HANDLERS */
-    const handleGoogleSignIn = async () => {
-        const provider = new GoogleAuthProvider();
-        try {
-            await signInWithPopup(auth, provider);
+    const googleProvider = new GoogleAuthProvider();
+    const githubProvider = new GithubAuthProvider();
+    useEffect(() => {
+        if (user) {
             navigate('/dashboard');
-        } catch (error) {
-            console.error('Google sign-in error:', error);
         }
-    };
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        if (!email || email.trim().length == 0) {
-            setEmailError("You didn't provide an email");
-            return;
-        }
-        if (!password || password.trim().length == 0) {
-            setPasswordError('You must provide a password');
-            return;
-        }
-        try {
-            await signInWithEmailAndPassword(auth, email, password);
-            navigate('/dashboard'); // or whatever page you want
-        } catch (error) {
-            console.error(error);
-        }
-    };
+        setLoadingPage(false);
+    }, [user, navigate]);
+
+    if (loadingPage) return <Typography>Loading...</Typography>;
+    const action = 'Log In';
     return (
         <Container
             maxWidth="lg"
@@ -80,75 +64,63 @@ const LogIn = () => {
                 justifyContent: 'center'
             }}
         >
+            <Snackbar
+                open={error != null}
+                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+                autoHideDuration={5000}
+                onClose={() => setError(null)}
+            >
+                <Alert severity='error'>{error}</Alert>
+            </Snackbar>
             <Paper sx={{ width: '100%', maxWidth: 500, p: 4 }}>
                 <Box
-                    component="form"
-                    onSubmit={handleSubmit}
-                    noValidate
                     sx={{
                         display: 'flex',
                         flexDirection: 'column',
                         gap: 2
                     }}
                 >
-                    <Typography variant="h4" textAlign="center">
-                        Login
-                    </Typography>
-                    <Divider />
-                    <TextField
-                        label="Email"
-                        type="text"
-                        autoComplete="Email"
-                        variant="filled"
-                        value={email}
-                        onChange={(e) => {
-                            setEmail(e.target.value);
-                            const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e.target.value);
-                            if (!isValid) {
-                                setEmailError('Please provide a valid email!');
-                            } else {
-                                setEmailError('');
-                            }
-                        }}
-                        required
-                        error={emailError != null}
-                        helperText={emailError}
-                    />
-                    <TextField
-                        label="Password"
-                        type="password"
-                        autoComplete="current-password"
-                        variant="filled"
-                        value={password}
-                        onChange={(e) => {
-                            setPassword(e.target.value);
-                            const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]).{12,64}$/;
-
-                            const isValid = regex.test(e.target.value);
-
-                            if (!isValid) {
-                                setPasswordError('Your password must contain: \nat least 12 characters\n1 number\n1 special character\n1 uppercase\n1 lowercase');
-                            } else {
-                                setPasswordError('');
-                            }
-                        }}
-                        required
-                        error={passwordError != null}
-                        helperText={passwordError}
-                    />
-                    <Button type="submit" variant="contained">
-                        Login
-                    </Button>
-                    <Divider sx={{ my: 2 }} />
-                    <Typography variant="h6" textAlign="center">
-                        Or login with a partner
-                    </Typography>
+                    <Typography variant="h4">Log In</Typography>
+                    <Divider sx={{ mb: 4 }} />
                     <Button
                         variant='outlined'
-                        onClick={handleGoogleSignIn}
+                        onClick={() => {
+                            setLoadingG(true);
+                            handleProviderSignIn(googleProvider, navigate, setError, setLoadingPage, setLoadingG);
+                        }}
                         startIcon={<img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" width={20} />}
+                        loading={loadingG}
+                        sx={{
+                            display: 'flex', justifyContent: 'center', alignItems: 'center', transition: '0.3s ease', '&:hover': {
+                                transform: 'scale(1.02)',
+                                bgcolor: palette.primary.light,
+                                color: palette.text.primary,
+                            }
+                        }}
                     >
-                        Login with Google
+                        {action} with Google
+                    </Button>
+                    <Button
+                        variant='outlined'
+                        onClick={() => {
+                            setLoadingGH(true);
+                            handleProviderSignIn(githubProvider, navigate, setError, setLoadingPage, setLoadingGH);
+                        }}
+                        startIcon={<img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/github.svg" alt="GitHub" width={20} />}
+                        loading={loadingGH}
+                        sx={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            transition: '0.3s ease',
+                            '&:hover': {
+                                transform: 'scale(1.02)',
+                                bgcolor: palette.primary.light,
+                                color: palette.text.primary,
+                            }
+                        }}
+                    >
+                        {action} with GitHub
                     </Button>
                 </Box>
             </Paper>

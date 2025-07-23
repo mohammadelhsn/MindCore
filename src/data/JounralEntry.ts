@@ -39,13 +39,21 @@ export class JournalEntry {
 		this.createdAt = options?.createdAt ?? new Date();
 		this.updatedAt = options?.updatedAt ?? new Date();
 	}
-
+	/**
+	 * @deprecated
+	 * @param newTitle
+	 * @param newContent
+	 */
 	updateContent(newTitle: string, newContent: string) {
 		this.title = newTitle;
 		this.content = newContent;
 		this.updatedAt = new Date();
 	}
-
+	/**
+	 * @deprecated
+	 *
+	 * @returns
+	 */
 	toFirestore() {
 		return {
 			authorId: this.authorId,
@@ -59,7 +67,11 @@ export class JournalEntry {
 			updatedAt: serverTimestamp(),
 		};
 	}
-
+	/**
+	 * @deprecated
+	 *
+	 * @returns
+	 */
 	toJSON() {
 		return {
 			id: this.id,
@@ -74,7 +86,12 @@ export class JournalEntry {
 			updatedAt: this.updatedAt,
 		};
 	}
-
+	/**
+	 * @deprecated
+	 *
+	 * @param doc
+	 * @returns
+	 */
 	static fromFirestore(doc: DocumentSnapshot): JournalEntry | null {
 		if (!doc.exists()) return null;
 		const data = doc.data();

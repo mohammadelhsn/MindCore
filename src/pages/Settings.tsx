@@ -12,7 +12,7 @@ import CardContent from '@mui/material/CardContent';
 //import CardActionArea from '@mui/material/CardActionArea';
 //import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 //import Box from '@mui/material/Box';
@@ -25,9 +25,11 @@ interface SettingsProps {
 const SettingsPage: React.FC<SettingsProps> = ({ mode, toggleColorMode }) => {
     const { user } = useContext(AuthContext);
     const navigate = useNavigate();
-    if (!user) {
-        navigate('/login');
-    }
+    useEffect(() => {
+        if (!user) {
+            navigate('/login');
+        }
+    });
     const handleChange = (_: any, newMode: 'light' | 'dark' | null) => {
         if (newMode) {
             toggleColorMode(newMode);

@@ -1,14 +1,23 @@
+/** REACT */
+
+import { useContext, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
+/** AUTH CONTEXT */
+
+import { AuthContext } from '../contexts/AuthContext';
+
+/** MUI COMPONENTS */
+
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-//import IconButton from '@mui/material/IconButton';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
 import Divider from '@mui/material/Divider';
 import Button from '@mui/material/Button';
-import { useContext, useState } from 'react';
-import { AuthContext } from '../contexts/AuthContext';
-import { useNavigate } from 'react-router-dom';
+
+/** NEW JOURNAL PAGE */
 
 const NewJournalPage = () => {
     const { user } = useContext(AuthContext);

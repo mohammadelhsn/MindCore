@@ -11,7 +11,7 @@ import CardContent from '@mui/material/CardContent';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
@@ -19,9 +19,11 @@ const ManageAccount = () => {
     const { user } = useContext(AuthContext);
     const navigate = useNavigate();
     const handleSubmit = () => { };
-    if (!user) {
-        navigate('/login');
-    }
+    useEffect(() => {
+        if (!user) {
+            navigate('/login');
+        }
+    });
     return (
         <Container
             maxWidth="lg"
