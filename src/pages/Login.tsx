@@ -143,7 +143,7 @@ const LogIn = () => {
                             }
                         }}
                     >
-                        Sign Up with Facebook
+                        Log In with Facebook
                     </Button>
                 </Box>
             </Paper>
