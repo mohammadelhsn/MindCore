@@ -16,7 +16,7 @@ import { useNavigate } from 'react-router-dom';
 
 /** FIREBASE */
 
-import { GoogleAuthProvider, GithubAuthProvider } from 'firebase/auth';
+import { GoogleAuthProvider, GithubAuthProvider, FacebookAuthProvider } from 'firebase/auth';
 import { AuthContext } from '../contexts/AuthContext';
 import { handleProviderSignIn } from '../data/Firebase';
 import { useTheme } from '@mui/material';
@@ -32,17 +32,18 @@ const LogIn = () => {
      * @deprecated ?? What is the purpose of this
      */
     const [loadingPage, setLoadingPage] = useState<boolean>(true);
-    /** 
-     * @description Controls the loading state of the button for Google
-     */
+
+    /** =========== LOADING STATE FOR EACH OF THE BUTTONS =========== */
     const [loadingG, setLoadingG] = useState<boolean>(false);
-    /**
-     * @description Controls the loading state of the button for GitHub
-     */
     const [loadingGH, setLoadingGH] = useState<boolean>(false);
+    const [loadingF, setLoadingF] = useState<boolean>(false);
+
     const navigate = useNavigate();
+
+    /** =========== INITIATE THE PROVIDERS =========== */
     const googleProvider = new GoogleAuthProvider();
     const githubProvider = new GithubAuthProvider();
+    const facebookProvider = new FacebookAuthProvider();
     useEffect(() => {
         if (user) {
             navigate('/dashboard');
@@ -121,6 +122,28 @@ const LogIn = () => {
                         }}
                     >
                         {action} with GitHub
+                    </Button>
+                    <Button
+                        variant='outlined'
+                        onClick={() => {
+                            setLoadingF(true);
+                            handleProviderSignIn(facebookProvider, navigate, setError, setLoadingPage, setLoadingF);
+                        }}
+                        startIcon={<img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/facebook.svg" alt="Facebook" width={20} />}
+                        loading={loadingF}
+                        sx={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            transition: '0.3s ease',
+                            '&:hover': {
+                                transform: 'scale(1.02)',
+                                bgcolor: palette.primary.light,
+                                color: palette.text.primary,
+                            }
+                        }}
+                    >
+                        Sign Up with Facebook
                     </Button>
                 </Box>
             </Paper>
