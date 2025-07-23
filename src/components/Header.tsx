@@ -1,6 +1,6 @@
 // React
 
-import React, { useContext } from 'react';
+import { useState, useContext, type MouseEvent } from 'react';
 
 // Material UI 
 
@@ -29,7 +29,7 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../contexts/AuthContext';
 import { signOut } from 'firebase/auth';
 import { auth } from '../data/Firebase';
-import { useMediaQuery } from '@mui/material';
+import useMediaQuery from '@mui/material/useMediaQuery';
 
 const StyledExternalLink = styled(NavLink)(({ theme }) => ({
     color: 'inherit',
@@ -46,10 +46,10 @@ const StyledExternalLink = styled(NavLink)(({ theme }) => ({
 const Header = () => {
     const theme = useTheme();
     const navigate = useNavigate();
-    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
     const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
-    const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    const handleClick = (event: MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
     };
     const handleClose = () => {
