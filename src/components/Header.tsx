@@ -24,11 +24,12 @@ import LoginIcon from '@mui/icons-material/Login';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 
 import Box from '@mui/material/Box';
-import { styled } from '@mui/material/styles';
+import { styled, useTheme } from '@mui/material/styles';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../contexts/AuthContext';
 import { signOut } from 'firebase/auth';
 import { auth } from '../data/Firebase';
+import { useMediaQuery } from '@mui/material';
 
 const StyledExternalLink = styled(NavLink)(({ theme }) => ({
     color: 'inherit',
@@ -43,9 +44,11 @@ const StyledExternalLink = styled(NavLink)(({ theme }) => ({
 }));
 
 const Header = () => {
+    const theme = useTheme();
     const navigate = useNavigate();
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
+    const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
     };
@@ -94,14 +97,17 @@ const Header = () => {
                 {!user &&
                     <Box>
                         <StyledExternalLink to="/login">
-                            <Button color='inherit' variant='contained' startIcon={<LoginIcon fontSize={'small'} />}>
-                                Log In
-                            </Button>
+                            {isSmallScreen ?
+                                (<IconButton color='inherit'><LoginIcon /></IconButton>)
+                                :
+                                (<Button color='inherit' variant='contained' startIcon={<LoginIcon fontSize={'small'} />}>
+                                    Log In
+                                </Button>)}
                         </StyledExternalLink>
                         <StyledExternalLink to="/signup">
-                            <Button color="inherit" variant='contained' startIcon={<PersonAddIcon fontSize='small' />}>
+                            {isSmallScreen ? <IconButton color='inherit'><PersonAddIcon /></IconButton> : <Button color='inherit' variant='contained' startIcon={<PersonAddIcon fontSize={'small'} />}>
                                 Sign Up
-                            </Button>
+                            </Button>}
                         </StyledExternalLink>
                     </Box>
                 }
