@@ -135,7 +135,7 @@ const Dashboard = () => {
                                     <Button onClick={() => {
                                         if (journal.passwordProtected) {
                                             setOpenDialog(true);
-                                        }
+                                        } else navigate(`/viewEntry/${journal.id}`);
                                     }} variant='text' sx={{
                                         transition: '0.3s ease', '&:hover': {
                                             bgcolor: palette.primary.main,
