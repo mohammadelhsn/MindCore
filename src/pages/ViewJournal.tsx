@@ -36,7 +36,7 @@ const ViewEntry = () => {
     const [isPrivate, setIsPrivate] = useState(false);
     const [category, setCategory] = useState('uncategorized');
     const [password, setPassword] = useState('');
-    const [openDialog, setOpenDialog] = useState(false);
+    //const [openDialog, setOpenDialog] = useState(false);
     const [value, setValue] = useState(0);
     const { id } = useParams();
     const navigate = useNavigate();

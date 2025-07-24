@@ -28,6 +28,7 @@ const SignUpPage = () => {
             navigate('/dashboard');
         }
     }, [user, navigate]);
+    loadingPage;
     if (loading) return <Typography>Loading...</Typography>;
     return (
         <Container

@@ -49,7 +49,7 @@ const LogIn = () => {
         }
         setLoadingPage(false);
     }, [user, navigate]);
-
+    loadingPage;
     if (loading) return <Typography>Loading...</Typography>;
     const action = 'Log In';
     return (
