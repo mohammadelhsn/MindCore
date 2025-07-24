@@ -23,14 +23,19 @@ import Fab from '@mui/material/Fab';
 import Box from '@mui/material/Box';
 //import Skeleton from '@mui/material/Skeleton';
 
+import Dialog from '@mui/material/Dialog';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogActions from '@mui/material/DialogActions';
+import DialogTitle from '@mui/material/DialogTitle';
+
 /** MUI ICONS */
 
 import Add from '@mui/icons-material/Add';
 
 /** DATA */
 
-import { fetchUser, type User } from '../data/User';
-import { Skeleton, useTheme, type SxProps } from '@mui/material';
+import { Skeleton, TextField, useTheme, type SxProps } from '@mui/material';
 
 /** STYLES */
 
@@ -51,19 +56,12 @@ const containerStyle = {
 
 const Dashboard = () => {
     const { palette } = useTheme();
-    const { user } = useContext(AuthContext);
-    const [userData, setUserData] = useState<User | null>();
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>('');
+    const { user, userData, loading } = useContext(AuthContext);
+    const [openDialog, setOpenDialog] = useState(false);
+    const [password, setPassword] = useState('');
+    const [passwordError, setPasswordError] = useState<string | null>(null);
     const navigate = useNavigate();
     useEffect(() => {
-        const fetchData = async () => {
-            if (user && !userData) {
-                await fetchUser(user.uid, setError, setUserData);
-                setLoading(false);
-            }
-        };
-        fetchData();
         if (!user) {
             navigate('/signup');
         }
@@ -77,7 +75,6 @@ const Dashboard = () => {
             </Paper>
         </Container>
     );
-    if (error) return <Typography>An error occurred</Typography>;
     if (!userData) return <p>No user data found.</p>;
     return (
         <Container
@@ -90,249 +87,67 @@ const Dashboard = () => {
             <Divider sx={{ my: 4 }} />
             <Paper sx={{ p: 3 }}>
                 <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 2, sm: 8, md: 12 }}>
-                    <Grid size={{ xs: 2, sm: 4, md: 4 }}>
-                        <Card elevation={3} sx={cardStyles}>
-                            <CardHeader
-                                title={
-                                    <>
-                                        <Box>Journal Entry #1</Box>
-                                        <Divider sx={{ mt: 1 }} />
-                                    </>
-                                }
-                            />
+                    {user && userData && userData.journals.length == 0 && (
+                        <Card>
+                            <CardHeader title="No journals found!" />
                             <CardContent>
                                 <Typography>
-                                    This is a brief
+                                    Create a new one!
                                 </Typography>
                             </CardContent>
-                            <CardActions sx={{ paddingLeft: 1 }}>
-                                <Button onClick={() => navigate('#')} variant='text' sx={{
-                                    transition: '0.3s ease', '&:hover': {
-                                        bgcolor: palette.primary.main,
-                                        color: palette.text.primary,
-                                    }
-                                }}>
-                                    View Entry
-                                </Button>
-                            </CardActions>
                         </Card>
-                    </Grid>
-                    <Grid size={{ xs: 2, sm: 4, md: 4 }}>
-                        <Card elevation={3} sx={cardStyles}>
-                            <CardHeader
-                                title={
-                                    <>
-                                        <Box>Journal Entry #2</Box>
-                                        <Divider sx={{ mt: 1 }} />
-                                    </>
-                                }
-                            />
-                            <CardContent>
-                                <Typography>
-                                    This is a brief
-                                </Typography>
-                            </CardContent>
-                            <CardActions sx={{ paddingLeft: 1 }}>
-                                <Button onClick={() => navigate('#')} sx={{
-                                    transition: '0.3s ease', '&:hover': {
-                                        bgcolor: palette.primary.main,
-                                        color: palette.text.primary,
+                    )}
+                    {user && userData && userData.journals.map((journal, index) => (
+                        <Grid size={{ xs: 2, sm: 4, md: 4 }} key={`${index}-${journal.id}`}>
+                            <Dialog open={openDialog}>
+                                <DialogTitle>This Entry is password protected</DialogTitle>
+                                <DialogContent>
+                                    <DialogContentText>Enter the password to view this</DialogContentText>
+                                    <TextField value={password} type='password' error={passwordError != null} helperText={passwordError} onChange={(e) => { setPassword(e.target.value); setPasswordError(null); }} />
+                                </DialogContent>
+                                <DialogActions>
+                                    <Button onClick={() => {
+                                        if (journal.password === password) {
+                                            navigate(`/viewEntry/${journal.id}`);
+                                        } else {
+                                            setPasswordError("Password incorrect!");
+                                        }
+                                    }} disabled={!password || password.trim().length == 0}>Unlock</Button>
+                                </DialogActions>
+                            </Dialog>
+                            <Card elevation={3} sx={cardStyles}>
+                                <CardHeader
+                                    title={
+                                        <>
+                                            <Box>{journal.title}</Box>
+                                            <Divider sx={{ mt: 1 }} />
+                                        </>
                                     }
-                                }}>
-                                    View Entry
-                                </Button>
-                            </CardActions>
-                        </Card>
-                    </Grid>
-                    <Grid size={{ xs: 2, sm: 4, md: 4 }}>
-                        <Card elevation={3} sx={cardStyles}>
-                            <CardHeader
-                                title={
-                                    <>
-                                        <Box>Journal Entry #3</Box>
-                                        <Divider sx={{ mt: 1 }} />
-                                    </>
-                                }
-                            />
-                            <CardContent>
-                                <Typography>
-                                    This is a brief
-                                </Typography>
-                            </CardContent>
-                            <CardActions sx={{ paddingLeft: 1 }}>
-                                <Button onClick={() => navigate('#')} sx={{
-                                    transition: '0.3s ease', '&:hover': {
-                                        bgcolor: palette.primary.main,
-                                        color: palette.text.primary,
-                                    }
-                                }}>
-                                    View Entry
-                                </Button>
-                            </CardActions>
-                        </Card>
-                    </Grid>
-                    <Grid size={{ xs: 2, sm: 4, md: 4 }}>
-                        <Card elevation={3} sx={cardStyles}>
-                            <CardHeader
-                                title={
-                                    <>
-                                        <Box>Journal Entry #1</Box>
-                                        <Divider sx={{ mt: 1 }} />
-                                    </>
-                                }
-                            />
-                            <CardContent>
-                                <Typography>
-                                    This is a brief
-                                </Typography>
-                            </CardContent>
-                            <CardActions sx={{ paddingLeft: 1 }}>
-                                <Button onClick={() => navigate('#')} sx={{
-                                    transition: '0.3s ease', '&:hover': {
-                                        bgcolor: palette.primary.main,
-                                        color: palette.text.primary,
-                                    }
-                                }}>
-                                    View Entry
-                                </Button>
-                            </CardActions>
-                        </Card>
-                    </Grid>
-                    <Grid size={{ xs: 2, sm: 4, md: 4 }}>
-                        <Card elevation={3} sx={cardStyles}>
-                            <CardHeader
-                                title={
-                                    <>
-                                        <Box>Journal Entry #2</Box>
-                                        <Divider sx={{ mt: 1 }} />
-                                    </>
-                                }
-                            />
-                            <CardContent>
-                                <Typography>
-                                    This is a brief
-                                </Typography>
-                            </CardContent>
-                            <CardActions sx={{ paddingLeft: 1 }}>
-                                <Button onClick={() => navigate('#')} sx={{
-                                    transition: '0.3s ease', '&:hover': {
-                                        bgcolor: palette.primary.main,
-                                        color: palette.text.primary,
-                                    }
-                                }}>
-                                    View Entry
-                                </Button>
-                            </CardActions>
-                        </Card>
-                    </Grid>
-                    <Grid size={{ xs: 2, sm: 4, md: 4 }}>
-                        <Card elevation={3} sx={cardStyles}>
-                            <CardHeader
-                                title={
-                                    <>
-                                        <Box>Journal Entry #3</Box>
-                                        <Divider sx={{ mt: 1 }} />
-                                    </>
-                                }
-                            />
-                            <CardContent>
-                                <Typography>
-                                    This is a brief
-                                </Typography>
-                            </CardContent>
-                            <CardActions sx={{ paddingLeft: 1 }}>
-                                <Button onClick={() => navigate('#')} sx={{
-                                    transition: '0.3s ease', '&:hover': {
-                                        bgcolor: palette.primary.main,
-                                        color: palette.text.primary,
-                                    }
-                                }}>
-                                    View Entry
-                                </Button>
-                            </CardActions>
-                        </Card>
-                    </Grid>
-                    <Grid size={{ xs: 2, sm: 4, md: 4 }}>
-                        <Card elevation={3} sx={cardStyles}>
-                            <CardHeader
-                                title={
-                                    <>
-                                        <Box>Journal Entry #1</Box>
-                                        <Divider sx={{ mt: 1 }} />
-                                    </>
-                                }
-                            />
-                            <CardContent>
-                                <Typography>
-                                    This is a brief
-                                </Typography>
-                            </CardContent>
-                            <CardActions sx={{ paddingLeft: 1 }}>
-                                <Button onClick={() => navigate('#')} sx={{
-                                    transition: '0.3s ease', '&:hover': {
-                                        bgcolor: palette.primary.main,
-                                        color: palette.text.primary,
-                                    }
-                                }}>
-                                    View Entry
-                                </Button>
-                            </CardActions>
-                        </Card>
-                    </Grid>
-                    <Grid size={{ xs: 2, sm: 4, md: 4 }}>
-                        <Card elevation={3} sx={cardStyles}>
-                            <CardHeader
-                                title={
-                                    <>
-                                        <Box>Journal Entry #2</Box>
-                                        <Divider sx={{ mt: 1 }} />
-                                    </>
-                                }
-                            />
-                            <CardContent>
-                                <Typography>
-                                    This is a brief
-                                </Typography>
-                            </CardContent>
-                            <CardActions sx={{ paddingLeft: 1 }}>
-                                <Button onClick={() => navigate('#')} sx={{
-                                    transition: '0.3s ease', '&:hover': {
-                                        bgcolor: palette.primary.main,
-                                        color: palette.text.primary,
-                                    }
-                                }}>
-                                    View Entry
-                                </Button>
-                            </CardActions>
-                        </Card>
-                    </Grid>
-                    <Grid size={{ xs: 2, sm: 4, md: 4 }}>
-                        <Card elevation={3} sx={cardStyles}>
-                            <CardHeader
-                                title={
-                                    <>
-                                        <Box>Journal Entry #3</Box>
-                                        <Divider sx={{ mt: 1 }} />
-                                    </>
-                                }
-                            />
-                            <CardContent>
-                                <Typography>
-                                    This is a brief
-                                </Typography>
-                            </CardContent>
-                            <CardActions sx={{ paddingLeft: 1 }}>
-                                <Button onClick={() => navigate('#')} sx={{
-                                    transition: '0.3s ease', '&:hover': {
-                                        bgcolor: palette.primary.main,
-                                        color: palette.text.primary,
-                                    }
-                                }}>
-                                    View Entry
-                                </Button>
-                            </CardActions>
-                        </Card>
-                    </Grid>
+                                />
+                                <CardContent>
+                                    <Typography>
+                                        {journal.content.trim().length > 0
+                                            ? journal.getBrief()
+                                            : 'There is no content yet! Edit me!'}
+                                    </Typography>
+                                </CardContent>
+                                <CardActions sx={{ paddingLeft: 1 }}>
+                                    <Button onClick={() => {
+                                        if (journal.passwordProtected) {
+                                            setOpenDialog(true);
+                                        }
+                                    }} variant='text' sx={{
+                                        transition: '0.3s ease', '&:hover': {
+                                            bgcolor: palette.primary.main,
+                                            color: palette.text.primary,
+                                        }
+                                    }}>
+                                        {journal.passwordProtected ? 'Unlock' : 'View Entry'}
+                                    </Button>
+                                </CardActions>
+                            </Card>
+                        </Grid>
+                    ))}
                 </Grid>
             </Paper>
             <Box sx={{

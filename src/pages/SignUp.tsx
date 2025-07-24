@@ -3,7 +3,8 @@ import Container from '@mui/material/Container';
 import Divider from '@mui/material/Divider';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
-import { Alert, Snackbar, useTheme } from '@mui/material';
+import Alert from '@mui/material/Alert';
+import { Snackbar, useTheme } from '@mui/material';
 import { useContext, useEffect, useState } from 'react';
 import { GithubAuthProvider, GoogleAuthProvider, FacebookAuthProvider } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
@@ -13,8 +14,9 @@ import Box from '@mui/material/Box';
 
 const SignUpPage = () => {
     const { palette } = useTheme();
-    const { user } = useContext(AuthContext);
+    const { user, loading } = useContext(AuthContext);
     const [error, setError] = useState<string | null>(null);
+    /** @deprecated This is going to be removed soon! */
     const [loadingPage, setLoadingPage] = useState<boolean>(false);
     const [loadingUser, setLoadingUser] = useState<boolean>(false);
     const navigate = useNavigate();
@@ -26,7 +28,7 @@ const SignUpPage = () => {
             navigate('/dashboard');
         }
     }, [user, navigate]);
-    if (loadingPage) return <Typography>Loading...</Typography>;
+    if (loading) return <Typography>Loading...</Typography>;
     return (
         <Container
             maxWidth="lg"

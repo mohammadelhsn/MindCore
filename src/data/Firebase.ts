@@ -1,11 +1,11 @@
-/** IMPORTS */
+/** ========== IMPORTS ============ */
 import { FirebaseError, initializeApp } from 'firebase/app';
 import { getAuth, signInWithPopup } from 'firebase/auth';
-import { doc, getFirestore, setDoc } from 'firebase/firestore';
-import { User, userToFirestore } from './User';
+import { doc, getDoc, getFirestore, setDoc } from 'firebase/firestore';
+import { User } from './User';
 import { type NavigateFunction } from 'react-router-dom';
 
-/** ======= TYPES ======= */
+/** ========== TYPES ============== */
 
 import type { AuthProvider } from 'firebase/auth';
 
@@ -31,19 +31,13 @@ const app = initializeApp(firebaseConfig);
 
 /** ======= EXPORTED MEMBERS ======= */
 
-/**
- * @description Firebase Authentication
- */
+/** @description Firebase Authentication */
 export const auth = getAuth(app);
 
-/**
- * @description Firebase Firestore
- */
+/** @description Firebase Firestore */
 export const db = getFirestore(app);
 
-/**
- * @description Firebase Errors and their responses
- */
+/** @description Firebase Errors and their responses */
 export const firebaseErrors: Record<string, string> = {
 	'auth/popup-closed-by-user': 'Sign-in popup closed before completion.',
 	'auth/cancelled-popup-request':
@@ -63,7 +57,6 @@ export const firebaseErrors: Record<string, string> = {
  * @param error The error to handle
  * @param setError The state setter for the page
  */
-
 export function handleFirebaseAuthError(
 	error: FirebaseError,
 	setError: setError
@@ -122,24 +115,33 @@ export async function handleProviderSignUp(
 ) {
 	try {
 		const result = await signInWithPopup(auth, provider);
+		if (!result.user) {
+			setError('Authentication failed: no user returned.');
+			return;
+		}
+
 		if (result.user) {
 			const fUser = result.user;
 			const userRef = doc(db, 'users', fUser.uid);
-			const userData = new User({
-				uid: fUser.uid,
-				theme: 'system',
-				twoFactorEnabled: false,
-				role: 'user',
-				language: 'en',
-				name: fUser.displayName
-					? fUser.displayName
-					: fUser.email
-					? fUser.email
-					: '',
-				journals: [],
-			});
-			await setDoc(userRef, userToFirestore(userData), { merge: true });
+			const docSnap = await getDoc(userRef);
+			if (!docSnap.exists()) {
+				const userData = new User({
+					uid: fUser.uid,
+					theme: 'system',
+					twoFactorEnabled: false,
+					role: 'user',
+					language: 'en',
+					name: fUser.displayName
+						? fUser.displayName
+						: fUser.email
+						? fUser.email
+						: '',
+					journals: [],
+				});
+				await setDoc(userRef, userData.toFirestore(), { merge: true });
+			}
 			navigate('/dashboard');
+			return;
 		}
 	} catch (error) {
 		if (error instanceof FirebaseError) {

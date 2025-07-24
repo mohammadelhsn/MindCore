@@ -170,7 +170,6 @@ const Header = () => {
                                 navigate('/manageAccount');
                             }}>
                                 <Avatar src={user.photoURL || undefined}>
-                                    {!user.photoURL && user.displayName?.[0]}
                                 </Avatar> Manage my Account
                             </MenuItem>
                             <Divider />

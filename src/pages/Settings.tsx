@@ -5,17 +5,17 @@ import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LightModeIcon from '@mui/icons-material/LightMode';
-
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
 import CardContent from '@mui/material/CardContent';
-//import CardActionArea from '@mui/material/CardActionArea';
-//import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
-//import Box from '@mui/material/Box';
+import { doc, updateDoc } from 'firebase/firestore';
+import { db } from '../data/Firebase';
+import { Snackbar } from '@mui/material';
+import Alert from '@mui/material/Alert';
 
 interface SettingsProps {
     mode: 'light' | 'dark';
@@ -23,16 +23,48 @@ interface SettingsProps {
 }
 
 const SettingsPage: React.FC<SettingsProps> = ({ mode, toggleColorMode }) => {
-    const { user } = useContext(AuthContext);
+    const { user, userData } = useContext(AuthContext);
+    const [settingSuccess, setSettingSuccess] = useState(false);
+    const [settingError, setSettingError] = useState(false);
+    const [message, setMessage] = useState<string | null>(null);
     const navigate = useNavigate();
     useEffect(() => {
-        if (!user) {
+        if (!user && userData == null) {
             navigate('/login');
+            return;
+        }
+        if (userData != null) {
+            if (userData.theme == 'system') {
+                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                mode = prefersDark ? 'dark' : 'light';
+            } else {
+                mode = userData.theme as ('dark' | 'light');
+            }
         }
     });
-    const handleChange = (_: any, newMode: 'light' | 'dark' | null) => {
+    async function updateTheme() {
+        if (user && userData) {
+            const userRef = doc(db, "users", user.uid);
+            try {
+                await updateDoc(userRef, { theme: userData.theme });
+                setMessage(`Successfully updated theme to ${userData.theme.toUpperCase()}`);
+                setSettingSuccess(true);
+            } catch (e) {
+                setMessage('Oops, an unexpected error has occurred!');
+                setSettingError(true);
+                console.error(e);
+            }
+        }
+    }
+    const handleChange = (_: any, newMode: 'light' | 'dark') => {
+        if (!newMode) return;
+
         if (newMode) {
             toggleColorMode(newMode);
+            if (userData) {
+                userData.theme = newMode;
+                updateTheme();
+            }
         }
     };
     return (
@@ -43,6 +75,32 @@ const SettingsPage: React.FC<SettingsProps> = ({ mode, toggleColorMode }) => {
                 py: { xs: 4, sm: 6 },
                 flexGrow: 1,
             }}>
+            <Snackbar
+                open={settingSuccess}
+                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+                autoHideDuration={5000}
+                onClose={() => {
+                    setSettingSuccess(false);
+                    setMessage(null);
+                }}
+            >
+                <Alert severity='success'>
+                    {message}
+                </Alert>
+            </Snackbar>
+            <Snackbar
+                open={settingError}
+                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+                autoHideDuration={5000}
+                onClose={() => {
+                    setSettingError(false);
+                    setMessage(null);
+                }}
+            >
+                <Alert severity='error'>
+                    {message}
+                </Alert>
+            </Snackbar>
             <Typography variant='h2'>Settings</Typography>
             <Divider sx={{ my: 4 }} />
             <Card>
@@ -55,7 +113,7 @@ const SettingsPage: React.FC<SettingsProps> = ({ mode, toggleColorMode }) => {
                         size="small"
                         color="primary"
                     >
-                        <ToggleButton value="light">
+                        <ToggleButton security='' value="light">
                             <LightModeIcon sx={{ mx: 1 }} />
                             <Typography>Light</Typography>
                         </ToggleButton>

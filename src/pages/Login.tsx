@@ -24,12 +24,11 @@ import { useTheme } from '@mui/material';
 /** LOGIN */
 
 const LogIn = () => {
-    const { user } = useContext(AuthContext);
+    const { user, loading } = useContext(AuthContext);
     const { palette } = useTheme();
     const [error, setError] = useState<string | null>(null);
     /**
-     * @description Controls the loading state of the page
-     * @deprecated ?? What is the purpose of this
+     * @deprecated Going to be removed soon! This does absolutely nothing
      */
     const [loadingPage, setLoadingPage] = useState<boolean>(true);
 
@@ -51,7 +50,7 @@ const LogIn = () => {
         setLoadingPage(false);
     }, [user, navigate]);
 
-    if (loadingPage) return <Typography>Loading...</Typography>;
+    if (loading) return <Typography>Loading...</Typography>;
     const action = 'Log In';
     return (
         <Container
@@ -143,7 +142,7 @@ const LogIn = () => {
                             }
                         }}
                     >
-                        Log In with Facebook
+                        {action} with Facebook
                     </Button>
                 </Box>
             </Paper>

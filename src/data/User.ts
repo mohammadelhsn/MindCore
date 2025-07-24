@@ -1,14 +1,19 @@
-import { doc, getDoc, type DocumentData } from 'firebase/firestore';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { db } from './Firebase';
 
 /** =========== TYPES =========== */
 
-import type { JournalEntry } from './JounralEntry';
+import { JournalEntry, type firestoreJournalEntry } from './JournalEntry';
 
 /**
  * @description A function that updates the user data state. It accepts either a User object or null.
  */
 export type setUserData = (value: User | null) => void;
+
+export type setSuccess = (value: React.SetStateAction<boolean>) => void;
+export type setErrorState = (value: React.SetStateAction<boolean>) => void;
+export type setMessage = (value: React.SetStateAction<string | null>) => void;
+
 /**
  * @description A function that sets an error value (string or null).
  */
@@ -26,7 +31,7 @@ export type UserObject = {
 	/** The user's preferred language */
 	language?: string;
 	/** The user's private journal entries */
-	journals: JournalEntry[];
+	journals: firestoreJournalEntry[];
 	/** The user's role */
 	role: 'user' | 'admin';
 };
@@ -63,47 +68,47 @@ export class User {
 		this.twoFactorEnabled = twoFactorEnabled;
 		this.language = language;
 		this.role = role;
-		this.journals = journals;
+		this.journals = [];
+		journals.forEach((journal) => {
+			this.journals.push(new JournalEntry(journal));
+		});
+	}
+	toFirestore() {
+		const firestoreJournals: firestoreJournalEntry[] = [];
+		this.journals.forEach((journal) => {
+			firestoreJournals.push(journal.toFirestore());
+		});
+		const userObj: UserObject = {
+			uid: this.uid,
+			name: this.name,
+			theme: this.theme,
+			twoFactorEnabled: this.twoFactorEnabled,
+			language: this.language,
+			role: this.role,
+			journals: firestoreJournals,
+		};
+		return userObj;
+	}
+	updateName(newName: string) {
+		this.name = newName;
+		return this;
+	}
+	updateTheme(newTheme: 'light' | 'dark' | 'system') {
+		this.theme = newTheme;
+		return this;
+	}
+	updateLanguage(newLanguage: string) {
+		this.language = newLanguage;
+		return this;
+	}
+	static fromFirestore(data: UserObject) {
+		return new User(data);
 	}
 }
 
 /** =========== FUNCTIONS =========== */
 
 /**
- * @description Converts User to JSON data for storage to Firestore
- *
- * @param {User} user The user data to convert into json
- * @returns {UserObject} The JSON version of the user's data
- */
-export function userToFirestore(user: User) {
-	const userObject: UserObject = {
-		uid: user.uid,
-		name: user.name,
-		theme: user.theme,
-		twoFactorEnabled: user.twoFactorEnabled,
-		language: user.language,
-		role: user.role,
-		journals: user.journals,
-	};
-	return userObject;
-}
-
-export function firestoreToUser(d: DocumentData) {
-	const data = d as UserObject;
-	const user = new User({
-		uid: data.uid,
-		name: data.name,
-		theme: data.theme,
-		twoFactorEnabled: data.twoFactorEnabled,
-		language: data.language,
-		role: data.role,
-		journals: data.journals,
-	});
-	return user;
-}
-
-/**
- *
  * @param {string} uid The user's ID
  * @param {setError} setError Setter for the error state of the page
  * @param {setUserData} setUserData Setter for the users data in the page
@@ -111,7 +116,7 @@ export function firestoreToUser(d: DocumentData) {
  */
 export async function fetchUser(
 	uid: string,
-	setError: setError,
+	setError?: setError,
 	setUserData?: setUserData
 ) {
 	try {
@@ -119,14 +124,14 @@ export async function fetchUser(
 		const docSnap = await getDoc(docRef);
 		if (docSnap.exists()) {
 			const data = docSnap.data();
-			const user = firestoreToUser(data);
+			const user = User.fromFirestore(data as UserObject);
 
-			if (setUserData) {
-				setUserData(user);
-			}
+			if (setUserData) setUserData(user);
+
 			return user;
 		} else {
-			setError('Not found!');
+			if (setError) setError('Not found!');
+
 			return null;
 		}
 	} catch (error) {
@@ -135,5 +140,28 @@ export async function fetchUser(
 	}
 }
 
-export async function storeUser() {}
-export async function updateUser() {}
+export async function saveUser(
+	user: User,
+	setSuccess?: setSuccess,
+	setError?: setErrorState,
+	setMessage?: setMessage
+) {
+	const userDocRef = doc(db, 'users', user.uid);
+	const dataToSave = user.toFirestore();
+
+	try {
+		await setDoc(userDocRef, dataToSave, { merge: true });
+		if (setMessage && setSuccess) {
+			setMessage('User saved successfully');
+			setSuccess(true);
+		}
+	} catch (error) {
+		if (setMessage && setError) {
+			setMessage('Oops, an error has occurred!');
+			setError(true);
+		}
+		console.error(error);
+	}
+}
+
+export async function createUser() {}

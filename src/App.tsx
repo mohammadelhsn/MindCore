@@ -13,6 +13,7 @@ import ManageAccount from './pages/ManageAccount';
 import './App.css';
 import LearnPage from './pages/Learn';
 import NewJournalPage from './pages/NewJournalEntry';
+import ViewEntry from './pages/ViewJournal';
 
 function App() {
   const [mode, setMode] = useState<'light' | 'dark'>(() => {
@@ -45,7 +46,8 @@ function App() {
           <Route path="/settings" element={<SettingsPage mode={mode} toggleColorMode={toggleColorMode} />} />
           <Route path="/manageAccount" element={<ManageAccount />} />
           <Route path="/learn" element={<LearnPage />} />
-          <Route path="newEntry" element={<NewJournalPage />} />
+          <Route path="/newEntry" element={<NewJournalPage />} />
+          <Route path="/viewEntry/:id" element={<ViewEntry />} />
         </Routes>
         <Footer />
       </ThemeProvider>
