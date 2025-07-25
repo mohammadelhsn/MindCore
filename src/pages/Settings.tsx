@@ -1,4 +1,6 @@
 import type React from 'react';
+import { useContext, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import ToggleButton from '@mui/material/ToggleButton';
@@ -9,13 +11,16 @@ import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
 import CardContent from '@mui/material/CardContent';
 import Divider from '@mui/material/Divider';
-import { useContext, useEffect, useState } from 'react';
+import Alert from '@mui/material/Alert';
+import Brightness6Icon from '@mui/icons-material/Brightness6';
+import SettingsIcon from '@mui/icons-material/Settings';
+import { Snackbar } from '@mui/material';
 import { AuthContext } from '../contexts/AuthContext';
-import { useNavigate } from 'react-router-dom';
+
+/** =========== FIREBASE =========== */
 import { doc, updateDoc } from 'firebase/firestore';
 import { db } from '../data/Firebase';
-import { Snackbar } from '@mui/material';
-import Alert from '@mui/material/Alert';
+
 
 interface SettingsProps {
     mode: 'light' | 'dark';
@@ -101,10 +106,10 @@ const SettingsPage: React.FC<SettingsProps> = ({ mode, toggleColorMode }) => {
                     {message}
                 </Alert>
             </Snackbar>
-            <Typography variant='h2'>Settings</Typography>
+            <Typography variant='h2' sx={{ display: 'flex', alignItems: 'center' }} ><SettingsIcon color='primary' fontSize='inherit' sx={{ mr: 1 }} />Settings</Typography>
             <Divider sx={{ my: 4 }} />
             <Card>
-                <CardHeader title="Theme Settings" />
+                <CardHeader title={<><Typography variant='inherit' sx={{ display: 'flex', alignItems: 'center' }}><Brightness6Icon sx={{ mr: 1 }} color='primary' /> Theme Settings</Typography><Divider sx={{ my: 2 }} /></>} />
                 <CardContent>
                     <ToggleButtonGroup
                         value={mode}
@@ -113,7 +118,7 @@ const SettingsPage: React.FC<SettingsProps> = ({ mode, toggleColorMode }) => {
                         size="small"
                         color="primary"
                     >
-                        <ToggleButton security='' value="light">
+                        <ToggleButton value="light">
                             <LightModeIcon sx={{ mx: 1 }} />
                             <Typography>Light</Typography>
                         </ToggleButton>

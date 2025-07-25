@@ -12,7 +12,7 @@ import Typography from '@mui/material/Typography';
 import { doc, updateDoc } from 'firebase/firestore';
 import { db } from '../data/Firebase';
 import Alert from '@mui/material/Alert';
-import { Paper, Snackbar } from '@mui/material';
+import { CardActions, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Paper, Snackbar } from '@mui/material';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Divider from '@mui/material/Divider';
@@ -25,6 +25,9 @@ import Checkbox from '@mui/material/Checkbox';
 import DescriptionIcon from '@mui/icons-material/Description';
 import SettingsIcon from '@mui/icons-material/Settings';
 import CategoryIcon from '@mui/icons-material/Category';
+import DeleteIcon from '@mui/icons-material/Delete';
+import PublishIcon from '@mui/icons-material/Publish';
+import NoteAltIcon from '@mui/icons-material/NoteAlt';
 
 
 const ViewEntry = () => {
@@ -36,7 +39,7 @@ const ViewEntry = () => {
     const [isPrivate, setIsPrivate] = useState(false);
     const [category, setCategory] = useState('uncategorized');
     const [password, setPassword] = useState('');
-    //const [openDialog, setOpenDialog] = useState(false);
+    const [openDialog, setOpenDialog] = useState(false);
     const [value, setValue] = useState(0);
     const { id } = useParams();
     const navigate = useNavigate();
@@ -106,9 +109,9 @@ const ViewEntry = () => {
             <Typography
                 variant="h5"
                 onClick={() => setEditing(true)}
-                sx={{ cursor: 'pointer', '&:hover': { textDecoration: 'underline' } }}
+                sx={{ cursor: 'pointer', '&:hover': { textDecoration: 'underline' }, display: 'flex', alignItems: 'center' }}
             >
-                {journal.title || 'Click to edit title'}
+                <NoteAltIcon sx={{ mr: 1 }} /> {journal.title || 'Click to edit title'}
             </Typography>
         );
     };
@@ -179,11 +182,7 @@ const ViewEntry = () => {
             </Typography>
         );
     };
-    const handleSubmit = () => {
-        if (user && userData) {
-
-        }
-    };
+    const handleSubmit = () => { };
     const handleDelete = async () => {
         if (user && userData) {
             const docRef = doc(db, "users", user.uid);
@@ -197,8 +196,22 @@ const ViewEntry = () => {
             navigate('/dashboard');
         }
     };
+    /*
+    TODO: Possibly add re-login for deletion
+    TODO: Add password check on this page in case someone tries to bypass it
+    */
     return (
         <Container maxWidth="lg" sx={{ px: { xs: 2, sm: 3 }, py: { xs: 4, sm: 6 }, flexGrow: 1 }}>
+            <Dialog open={openDialog}>
+                <DialogTitle sx={{ display: 'flex', alignItems: 'center' }}><DeleteIcon color='error' sx={{ mr: 1 }} />Delete Journal</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>Are you sure you want to delete this?</DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setOpenDialog(false)} >Close</Button>
+                    <Button variant='contained' onClick={handleDelete} color='error'>Delete</Button>
+                </DialogActions>
+            </Dialog>
             <Snackbar
                 open={settingSuccess}
                 anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
@@ -234,7 +247,7 @@ const ViewEntry = () => {
                     <Card elevation={3} sx={{ mx: 'auto', mt: 5, p: 3 }}>
                         <CardHeader title={<><EditableTitle /><Divider sx={{ my: 2 }} /></>} />
                         <CardContent>
-                            <Box mt={3}>
+                            <Box>
                                 <EditableBody />
                             </Box>
                         </CardContent>
@@ -244,7 +257,7 @@ const ViewEntry = () => {
                     <Card elevation={3} sx={{ mt: 5 }}>
                         <CardHeader title={
                             <>
-                                <Typography variant='inherit'>Config</Typography>
+                                <Typography variant='inherit' sx={{ display: 'flex', alignItems: 'center' }}><SettingsIcon sx={{ mr: 1 }} color='primary' />Config</Typography>
                                 <Divider sx={{ mt: 2 }} />
                             </>
                         } />
@@ -269,12 +282,22 @@ const ViewEntry = () => {
                                 />
                             </Collapse>
                         </CardContent>
+                        <CardActions>
+                            <Button
+                                variant="outlined"
+                                onClick={handleSubmit}
+                                disabled={(!password && isPrivate) || !isPrivate}
+                                startIcon={<PublishIcon />}
+                            >
+                                Submit
+                            </Button>
+                        </CardActions>
                     </Card>
                     <Divider sx={{ my: 2 }} />
                     <Card elevation={3}>
                         <CardHeader title={
                             <>
-                                <Typography variant='inherit' sx={{ display: 'flex', alignItems: 'center' }}><CategoryIcon sx={{ mr: 1 }} />Categories</Typography>
+                                <Typography variant='inherit' sx={{ display: 'flex', alignItems: 'center' }}><CategoryIcon color='primary' sx={{ mr: 1 }} />Categories</Typography>
                                 <Divider sx={{ mt: 2 }} />
                             </>
                         } />
@@ -285,32 +308,41 @@ const ViewEntry = () => {
                                 onChange={(e) => setCategory(e.target.value)}
                                 displayEmpty
                             >
-                                <MenuItem value="" disabled>
-                                    Select Category
-                                </MenuItem>
+                                <MenuItem value="" disabled>Select Category</MenuItem>
                                 <MenuItem value="uncategorized">Uncategorized</MenuItem>
                                 <MenuItem value="personal">Personal</MenuItem>
                                 <MenuItem value="work">Work</MenuItem>
                                 <MenuItem value="dreams">Dreams</MenuItem>
                             </Select>
                         </CardContent>
+                        <CardActions>
+                            <Button
+                                variant="outlined"
+                                onClick={handleSubmit}
+                                startIcon={<PublishIcon />}
+                            >
+                                Submit
+                            </Button>
+                        </CardActions>
                     </Card>
                     <Divider sx={{ my: 4 }} />
-                    <Box sx={{ mb: 4 }}>
-                        <Button
-                            variant="contained"
-                            fullWidth
-                            onClick={handleSubmit}
-                            disabled={!category || (!password && isPrivate)}
-                        >
-                            Submit
-                        </Button>
-                        <Button variant='contained' fullWidth onClick={handleDelete} color='error' sx={{ mt: 2 }}>Delete</Button>
-                    </Box>
+                    <Card elevation={3}>
+                        <CardHeader title={
+                            <>
+                                <Typography variant='inherit' sx={{ display: 'flex', alignItems: 'center' }}><DeleteIcon color='error' sx={{ mr: 1 }} />Delete this Journal</Typography>
+                                <Divider sx={{ mt: 2 }} />
+                            </>
+                        }
+                        />
+                        <CardContent><Typography variant='inherit'>This will permanently delete your journal. This action cannot be undone.</Typography></CardContent>
+                        <CardActions>
+                            <Button variant='contained' onClick={() => setOpenDialog(true)} color='error' startIcon={<DeleteIcon />} sx={{ mt: 2 }}>Delete</Button>
+                        </CardActions>
+                    </Card>
                 </>
                 }
             </Paper>
-        </Container>
+        </Container >
     );
 };
 export default ViewEntry;
