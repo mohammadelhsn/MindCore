@@ -1,41 +1,40 @@
-/** REACT */
-
+/** ========== REACT ========== */
 import { useContext, useEffect, useState } from 'react';
+
+/** ========== REACT ROUTER ========== */
 import { useNavigate } from 'react-router-dom';
 
-/** AUTH */
-
+/** ========== AUTH ========== */
 import { AuthContext } from '../contexts/AuthContext';
 
-/** MUI COMPONENTS */
-
+/** ========== MUI COMPONENTS ========== */
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import CardHeader from '@mui/material/CardHeader';
-import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import Divider from '@mui/material/Divider';
-import Button from '@mui/material/Button';
-import Paper from '@mui/material/Paper';
-import Card from '@mui/material/Card';
-import Grid from '@mui/material/Grid';
-import Fab from '@mui/material/Fab';
-import Box from '@mui/material/Box';
-//import Skeleton from '@mui/material/Skeleton';
-
 import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
-import DialogActions from '@mui/material/DialogActions';
 import DialogTitle from '@mui/material/DialogTitle';
+import Divider from '@mui/material/Divider';
+import Fab from '@mui/material/Fab';
+import Grid from '@mui/material/Grid';
+import Paper from '@mui/material/Paper';
+import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
+import Skeleton from '@mui/material/Skeleton';
 
-/** MUI ICONS */
+/** ========== MUI HOOKS & TYPES ========== */
+import { useTheme } from '@mui/material';
+import type { SxProps } from '@mui/material';
 
+/** ========== MUI ICONS ========== */
 import Add from '@mui/icons-material/Add';
 
-/** DATA */
-
-import { Skeleton, TextField, useTheme, type SxProps } from '@mui/material';
 
 /** STYLES */
 

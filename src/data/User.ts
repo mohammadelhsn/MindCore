@@ -10,8 +10,11 @@ import { JournalEntry, type firestoreJournalEntry } from './JournalEntry';
  */
 export type setUserData = (value: User | null) => void;
 
+/** @description Set the success state of the page */
 export type setSuccess = (value: React.SetStateAction<boolean>) => void;
+/** @description A function that sets the error state for the page */
 export type setErrorState = (value: React.SetStateAction<boolean>) => void;
+/** @description A function that sets success / error state message */
 export type setMessage = (value: React.SetStateAction<string | null>) => void;
 
 /**
@@ -99,6 +102,20 @@ export class User {
 	}
 	updateLanguage(newLanguage: string) {
 		this.language = newLanguage;
+		return this;
+	}
+	getJournalById(id: string): JournalEntry | undefined {
+		return this.journals.find((j) => j.id === id);
+	}
+	clone(): User {
+		return new User(this.toFirestore());
+	}
+	addJournalEntry(entry: JournalEntry) {
+		this.journals.push(entry);
+		return this;
+	}
+	removeJournalEntryById(id: string) {
+		this.journals = this.journals.filter((j) => j.id !== id);
 		return this;
 	}
 	static fromFirestore(data: UserObject) {

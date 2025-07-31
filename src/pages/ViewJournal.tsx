@@ -1,33 +1,50 @@
+/** ========== React & Routing ==========*/
 import { useContext, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { AuthContext } from '../contexts/AuthContext';
-import { JournalEntry, type firestoreJournalEntry } from '../data/JournalEntry';
-import Box from '@mui/material/Box';
-import Container from '@mui/material/Container';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import CardHeader from '@mui/material/CardHeader';
-import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
+
+/** ========== Firebase ========== */
 import { doc, updateDoc } from 'firebase/firestore';
 import { db } from '../data/Firebase';
+
+/** ========== Context & Data ========== */
+import { AuthContext } from '../contexts/AuthContext';
+import { JournalEntry, type firestoreJournalEntry } from '../data/JournalEntry';
+
+/** ========== MUI Components ==========*/
 import Alert from '@mui/material/Alert';
-import { CardActions, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Paper, Snackbar } from '@mui/material';
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Card from '@mui/material/Card';
+import CardActions from '@mui/material/CardActions';
+import CardContent from '@mui/material/CardContent';
+import CardHeader from '@mui/material/CardHeader';
+import Checkbox from '@mui/material/Checkbox';
+import Collapse from '@mui/material/Collapse';
+import Container from '@mui/material/Container';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 import Divider from '@mui/material/Divider';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import Select from '@mui/material/Select';
-import Collapse from '@mui/material/Collapse';
 import MenuItem from '@mui/material/MenuItem';
-import Button from '@mui/material/Button';
-import Checkbox from '@mui/material/Checkbox';
-import DescriptionIcon from '@mui/icons-material/Description';
-import SettingsIcon from '@mui/icons-material/Settings';
+import Paper from '@mui/material/Paper';
+import Select from '@mui/material/Select';
+import Snackbar from '@mui/material/Snackbar';
+import Tab from '@mui/material/Tab';
+import Tabs from '@mui/material/Tabs';
+import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
+
+/** ========== MUI Icons ========== */
 import CategoryIcon from '@mui/icons-material/Category';
 import DeleteIcon from '@mui/icons-material/Delete';
-import PublishIcon from '@mui/icons-material/Publish';
+import DescriptionIcon from '@mui/icons-material/Description';
 import NoteAltIcon from '@mui/icons-material/NoteAlt';
+import PublishIcon from '@mui/icons-material/Publish';
+import SettingsIcon from '@mui/icons-material/Settings';
+
 
 
 const ViewEntry = () => {

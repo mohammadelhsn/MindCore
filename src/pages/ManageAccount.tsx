@@ -1,17 +1,25 @@
-import Typography from '@mui/material/Typography';
-import Container from '@mui/material/Container';
-import Paper from '@mui/material/Paper';
+/** ========== REACT ========== */
+import { useContext, useEffect } from 'react';
+
+/** ========== REACT ROUTER ========== */
+import { useNavigate } from 'react-router-dom';
+
+/** ========== CONTEXT ========== */
+import { AuthContext } from '../contexts/AuthContext';
+
+/** ========== MUI COMPONENTS ========== */
 import Box from '@mui/material/Box';
-import Divider from '@mui/material/Divider';
+import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
-import CardHeader from '@mui/material/CardHeader';
 import CardContent from '@mui/material/CardContent';
+import CardHeader from '@mui/material/CardHeader';
+import Container from '@mui/material/Container';
+import Divider from '@mui/material/Divider';
+import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
-import { useContext, useEffect } from 'react';
-import { AuthContext } from '../contexts/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import Typography from '@mui/material/Typography';
+
 
 const ManageAccount = () => {
     const { user } = useContext(AuthContext);

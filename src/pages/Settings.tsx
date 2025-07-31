@@ -1,25 +1,34 @@
+/** ========== React ========== */
 import type React from 'react';
 import { useContext, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import Typography from '@mui/material/Typography';
-import Container from '@mui/material/Container';
-import ToggleButton from '@mui/material/ToggleButton';
-import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
-import DarkModeIcon from '@mui/icons-material/DarkMode';
-import LightModeIcon from '@mui/icons-material/LightMode';
-import Card from '@mui/material/Card';
-import CardHeader from '@mui/material/CardHeader';
-import CardContent from '@mui/material/CardContent';
-import Divider from '@mui/material/Divider';
-import Alert from '@mui/material/Alert';
-import Brightness6Icon from '@mui/icons-material/Brightness6';
-import SettingsIcon from '@mui/icons-material/Settings';
-import { Snackbar } from '@mui/material';
-import { AuthContext } from '../contexts/AuthContext';
 
-/** =========== FIREBASE =========== */
+/** ========== React Router ========== */
+import { useNavigate } from 'react-router-dom';
+
+/** ========== Firebase ========== */
 import { doc, updateDoc } from 'firebase/firestore';
 import { db } from '../data/Firebase';
+
+/** ========== Context ========== */
+import { AuthContext } from '../contexts/AuthContext';
+
+/** ========== MUI Components ========== */
+import Alert from '@mui/material/Alert';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import CardHeader from '@mui/material/CardHeader';
+import Container from '@mui/material/Container';
+import Divider from '@mui/material/Divider';
+import Snackbar from '@mui/material/Snackbar';
+import ToggleButton from '@mui/material/ToggleButton';
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+import Typography from '@mui/material/Typography';
+
+/** ========== MUI Icon ========== */
+import Brightness6Icon from '@mui/icons-material/Brightness6';
+import DarkModeIcon from '@mui/icons-material/DarkMode';
+import LightModeIcon from '@mui/icons-material/LightMode';
+import SettingsIcon from '@mui/icons-material/Settings';
 
 
 interface SettingsProps {

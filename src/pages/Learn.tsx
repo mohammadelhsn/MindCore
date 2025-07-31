@@ -1,4 +1,4 @@
-/** MUI COMPONENTS */
+/** ========== MUI COMPONENTS ========== */
 
 import CardContent from '@mui/material/CardContent';
 import CardHeader from '@mui/material/CardHeader';

@@ -1,36 +1,40 @@
-/** REACT */
-
+/** ========== REACT ========== */
 import { useContext, useEffect, useState } from 'react';
+
+/** ========== REACT ROUTER ========== */
 import { useNavigate } from 'react-router-dom';
 
-/** AUTH CONTEXT */
-
+/** ========== CONTEXT ========== */
 import { AuthContext } from '../contexts/AuthContext';
 
-/** MUI COMPONENTS */
+/** ========== FIREBASE ========== */
+import { doc, updateDoc } from 'firebase/firestore';
+import { db } from '../data/Firebase';
 
-import Typography from '@mui/material/Typography';
-import Container from '@mui/material/Container';
-import Stepper from '@mui/material/Stepper';
-import StepLabel from '@mui/material/StepLabel';
-import Step from '@mui/material/Step';
-import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
+/** ========== INTERNAL DATA ========== */
+import { JournalEntry } from '../data/JournalEntry';
+
+/** ========== MUI COMPONENTS ========== */
+import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
-import Select from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import Divider from '@mui/material/Divider';
-import Collapse from '@mui/material/Collapse';
+import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardHeader from '@mui/material/CardHeader';
-import { JournalEntry } from '../data/JournalEntry';
-import { doc, updateDoc } from 'firebase/firestore';
-import { db } from '../data/Firebase';
-import Alert from '@mui/material/Alert';
-import { Snackbar } from '@mui/material';
+import Checkbox from '@mui/material/Checkbox';
+import Collapse from '@mui/material/Collapse';
+import Container from '@mui/material/Container';
+import Divider from '@mui/material/Divider';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
+import Snackbar from '@mui/material/Snackbar';
+import Step from '@mui/material/Step'; Box;
+import StepLabel from '@mui/material/StepLabel';
+import Stepper from '@mui/material/Stepper';
+import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
+
 const steps = ['Title', 'Settings & Config'];
 
 

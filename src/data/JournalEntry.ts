@@ -57,7 +57,7 @@ export class JournalEntry {
 		this.authorId = options.authorId;
 		this.title = options.title;
 		this.content = options.content;
-		this.tags = options?.tags;
+		this.tags = options?.tags ? options.tags : [];
 		this.mood = options?.mood;
 		this.passwordProtected = options?.passwordProtected;
 		this.password = options?.password ? options.password : null;
@@ -93,12 +93,27 @@ export class JournalEntry {
 		this.content = newContent;
 		return this;
 	}
+	addTag(tag: string) {
+		if (!this.tags) return;
+		if (!this.tags.includes(tag)) this.tags.push(tag);
+		return this;
+	}
+
+	removeTag(tag: string) {
+		if (!this.tags) return;
+		this.tags = this.tags.filter((t) => t !== tag);
+		return this;
+	}
 	getBrief(wordLimit = 30): string {
 		const words = this.content.trim().split(/\s+/);
 		return words.length > wordLimit
 			? words.slice(0, wordLimit).join(' ') + '...'
 			: this.content;
 	}
+	equals(other: JournalEntry) {
+		return this.id === other.id;
+	}
+	updateJournalEntry() {}
 	/** @description Takes raw Firestore data and coverts it into a Journal Entry class */
 	static fromFirestore(data: firestoreJournalEntry) {
 		return new JournalEntry(data);

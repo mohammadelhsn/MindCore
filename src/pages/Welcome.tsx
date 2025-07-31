@@ -1,9 +1,9 @@
-/** MUI COMPONENTS */
+/** ========== MUI COMPONENTS ========== */
 
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 
-/** WELCOME PAGE */
+/** ========== WELCOME PAGE ========== */
 
 const Welcome = () => {
     return (

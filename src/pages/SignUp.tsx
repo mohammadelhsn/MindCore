@@ -1,16 +1,29 @@
-import Typography from '@mui/material/Typography';
-import Container from '@mui/material/Container';
-import Divider from '@mui/material/Divider';
-import Button from '@mui/material/Button';
-import Card from '@mui/material/Card';
-import Alert from '@mui/material/Alert';
-import { Snackbar, useTheme } from '@mui/material';
+/** ========== React ========== */
 import { useContext, useEffect, useState } from 'react';
-import { GithubAuthProvider, GoogleAuthProvider, FacebookAuthProvider } from 'firebase/auth';
+
+/** ========== React Router ========== */
 import { useNavigate } from 'react-router-dom';
+
+/** ========== Firebase Auth Providers ========== */
+import { FacebookAuthProvider, GithubAuthProvider, GoogleAuthProvider } from 'firebase/auth';
+
+/** ========== Context & Utilities ========== */
 import { AuthContext } from '../contexts/AuthContext';
 import { handleProviderSignUp } from '../data/Firebase';
+
+/** ========== MUI Components ========== */
+import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Card from '@mui/material/Card';
+import Container from '@mui/material/Container';
+import Divider from '@mui/material/Divider';
+import Snackbar from '@mui/material/Snackbar';
+import Typography from '@mui/material/Typography';
+
+/** ========== MUI Hooks ==========*/
+import { useTheme } from '@mui/material';
+
 
 const SignUpPage = () => {
     const { palette } = useTheme();

@@ -1,25 +1,28 @@
-/** MUI COMPONENTS */
-
-import Typography from '@mui/material/Typography';
-import Container from "@mui/material/Container";
-import Paper from '@mui/material/Paper';
-import Box from '@mui/material/Box';
-import Divider from '@mui/material/Divider';
-import Button from '@mui/material/Button';
-import { Snackbar } from '@mui/material';
+/** ========== MUI COMPONENTS ========== */
 import Alert from '@mui/material/Alert';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Container from '@mui/material/Container';
+import Divider from '@mui/material/Divider';
+import Paper from '@mui/material/Paper';
+import Snackbar from '@mui/material/Snackbar';
+import Typography from '@mui/material/Typography';
 
-/** REACT */
+/** ========== MUI HOOKS ========== */
+import { useTheme } from '@mui/material';
 
+/** ========== REACT ========== */
 import { useContext, useEffect, useState } from 'react';
+
+/** ========== REACT ROUTER ========== */
 import { useNavigate } from 'react-router-dom';
 
-/** FIREBASE */
+/** ========== FIREBASE ========== */
+import { FacebookAuthProvider, GithubAuthProvider, GoogleAuthProvider } from 'firebase/auth';
 
-import { GoogleAuthProvider, GithubAuthProvider, FacebookAuthProvider } from 'firebase/auth';
+/** ========== CONTEXT & HELPERS ========== */
 import { AuthContext } from '../contexts/AuthContext';
 import { handleProviderSignIn } from '../data/Firebase';
-import { useTheme } from '@mui/material';
 
 /** LOGIN */
 
@@ -31,7 +34,6 @@ const LogIn = () => {
      * @deprecated Going to be removed soon! This does absolutely nothing
      */
     const [loadingPage, setLoadingPage] = useState<boolean>(true);
-
     /** =========== LOADING STATE FOR EACH OF THE BUTTONS =========== */
     const [loadingG, setLoadingG] = useState<boolean>(false);
     const [loadingGH, setLoadingGH] = useState<boolean>(false);

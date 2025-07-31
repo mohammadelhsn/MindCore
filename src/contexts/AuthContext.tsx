@@ -1,7 +1,8 @@
 import { createContext, useEffect, useState, type ReactNode } from 'react';
 import { onAuthStateChanged, type User } from 'firebase/auth';
-import { auth } from '../data/Firebase';
-import { User as UserData, fetchUser } from '../data/User';
+import { auth, db } from '../data/Firebase';
+import { User as UserData } from '../data/User';
+import { doc, onSnapshot } from 'firebase/firestore';
 
 interface AuthContextType {
     user: User | null;
@@ -23,20 +24,30 @@ const AuthProvider = ({ children }: { children: ReactNode; }) => {
     /** @description Loading the User state */
     const [loading, setLoading] = useState(true);
     useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+        let unsubscribeFirestore = () => { };
+        const unsubscribeAuth = onAuthStateChanged(auth, (currentUser) => {
             setUser(currentUser);
-            const fetchUserData = async () => {
-                if (currentUser) {
-                    const data = await fetchUser(currentUser.uid);
-                    setUserData(data);
-                } else {
-                    setUserData(null);
-                }
-            };
-            fetchUserData();
-            setLoading(false);
+            setLoading(true);
+            if (currentUser) {
+                const docRef = doc(db, "users", currentUser.uid);
+                unsubscribeFirestore = onSnapshot(docRef, (docSnap) => {
+                    if (docSnap.exists()) {
+                        setUserData(docSnap.data() as UserData);
+                    } else {
+                        setUserData(null);
+                    }
+                    setLoading(false);
+                });
+            } else {
+                setUserData(null);
+                setLoading(false);
+            }
         });
-        return () => unsubscribe();
+
+        return () => {
+            unsubscribeAuth();
+            unsubscribeFirestore();
+        };
     }, []);
     return (
         <AuthContext.Provider value={{ user, loading, userData }}>{children}</AuthContext.Provider>
