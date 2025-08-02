@@ -1,69 +1,21 @@
-# React + TypeScript + Vite
+# MindCore
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+MindCore is a mental health journaling and learning app designed to help users track their emotions, reflect on their thoughts, and access resources for personal growth and wellness.
 
-Currently, two official plugins are available:
+> **Note:** 🚧 MindCore is currently under active development!
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Live Demo URL [here](https://mindcore-dev.web.app/#/)
 
-## Expanding the ESLint configuration
+## Stack
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+| Technology  | Icon                                                                |
+| ----------- | ------------------------------------------------------------------- |
+| React       | ![React](https://go-skill-icons.vercel.app/api/icons?i=react)       |
+| Material UI | ![Material UI](https://go-skill-icons.vercel.app/api/icons?i=mui)   |
+| TypeScript  | ![TypeScript](https://go-skill-icons.vercel.app/api/icons?i=ts)     |
+| Firebase    | ![Firebase](https://go-skill-icons.vercel.app/api/icons?i=firebase) |
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## Status
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+🚧 MindCore is currently under active development!
+We're working hard to build a thoughtful and helpful mental health journaling and learning app. Stay tuned for updates and new features coming soon!
