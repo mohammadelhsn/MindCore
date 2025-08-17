@@ -8,10 +8,11 @@ import Divider from '@mui/material/Divider';
 import Paper from '@mui/material/Paper';
 import Skeleton from '@mui/material/Skeleton';
 import Typography from '@mui/material/Typography';
+import { containerStyle } from '../data/Styles';
 
 const LearnPage = () => {
     return (
-        <Container maxWidth="lg" sx={{ px: { xs: 2, sm: 3 }, py: { xs: 4, sm: 6 }, flexGrow: 1 }}>
+        <Container maxWidth="lg" sx={containerStyle}>
             <Box>
                 <Typography variant='h2'>Learn</Typography>
                 <Typography variant='h6' sx={{ fontStyle: 'italic' }}>Disclaimer! Learning from this website is not a substitute for real help! If you or a loved one is in danger of harming someone else or yourself, please check out click here</Typography>

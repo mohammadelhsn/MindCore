@@ -1,56 +1,56 @@
 export type Mood = '😊' | '😢' | '😡' | '😴' | '😎' | string;
 
 export type firestoreJournalEntry = {
-	/** @description The author's ID */
+	/** The author's ID */
 	authorId: string;
-	/** @description The title of the journal */
+	/** The title of the journal */
 	title: string;
-	/** @description The content of the journal */
+	/** The content of the journal */
 	content: string;
-	/** @description The tags for the journal (WIP) */
+	/** The tags for the journal (WIP) */
 	tags?: string[];
-	/** @description The mood for the journal (WIP) */
+	/** The mood for the journal (WIP) */
 	mood?: Mood;
-	/** @description Whether the journal is password protected (WIP)*/
+	/** Whether the journal is password protected (WIP)*/
 	passwordProtected?: boolean;
-	/** @description The location for the journal (WIP) */
+	/** The location for the journal (WIP) */
 	location?: string;
-	/** @description The password for the journal if password protection is enabled (WIP) */
+	/** The password for the journal if password protection is enabled (WIP) */
 	password?: string | null;
-	/** @description The ID for the journal */
+	/** The ID for the journal */
 	id?: string;
-	/** @description When the journal was created at (WIP) */
+	/** When the journal was created at (WIP) */
 	createdAt?: Date;
-	/** @description Last updated time for the journal */
+	/** Last updated time for the journal */
 	updatedAt?: Date;
-	/** @description Category for the journal (WIP) */
+	/** Category for the journal (WIP) */
 	category?: string;
 };
 
 export class JournalEntry {
-	/** @description The ID for the journal */
+	/** The ID for the journal */
 	id: string;
-	/** @description The title of the journal */
+	/** The title of the journal */
 	title: string;
-	/** @description The content of the journal */
+	/** The content of the journal */
 	content: string;
-	/** @description The author's ID */
+	/** The author's ID */
 	authorId: string;
-	/** @description When the journal was created at */
+	/** When the journal was created at */
 	createdAt: Date;
-	/** @description Last updated time for the journal */
+	/** Last updated time for the journal */
 	updatedAt: Date;
-	/** @description The tags for the journal (WIP) */
+	/** The tags for the journal (WIP) */
 	tags?: string[];
-	/** @description The mood for the journal (WIP) */
+	/** The mood for the journal (WIP) */
 	mood?: Mood;
-	/** @description Whether the journal is password protected */
+	/** Whether the journal is password protected */
 	passwordProtected?: boolean;
-	/** @description The location for the journal */
+	/** The location for the journal */
 	location?: string;
-	/** @description The journal's category */
+	/** The journal's category */
 	category?: string;
-	/** @description The password for the journal if password protection is enabled */
+	/** The password for the journal if password protection is enabled */
 	password?: string | null;
 	constructor(options: firestoreJournalEntry) {
 		this.id = options?.id || crypto.randomUUID(); // fallback if you're creating locally
@@ -66,7 +66,7 @@ export class JournalEntry {
 		this.updatedAt = options?.updatedAt ?? new Date();
 		this.category = options?.category ? options.category : 'Uncategorized';
 	}
-	/** @description Takes the class data and returns a Firestore compatible object */
+	/** Takes the class data and returns a Firestore compatible object */
 	toFirestore(): firestoreJournalEntry {
 		return {
 			id: this.id,
@@ -83,12 +83,12 @@ export class JournalEntry {
 			category: this.category,
 		};
 	}
-	/** @description Update the journals title */
+	/** Update the journals title */
 	updateTitle(newTitle: string) {
 		this.title = newTitle;
 		return this;
 	}
-	/** @description Update the journals content */
+	/** Update the journals content */
 	updateContent(newContent: string) {
 		this.content = newContent;
 		return this;
@@ -114,7 +114,7 @@ export class JournalEntry {
 		return this.id === other.id;
 	}
 	updateJournalEntry() {}
-	/** @description Takes raw Firestore data and coverts it into a Journal Entry class */
+	/** Takes raw Firestore data and coverts it into a Journal Entry class */
 	static fromFirestore(data: firestoreJournalEntry) {
 		return new JournalEntry(data);
 	}

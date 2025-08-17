@@ -1,11 +1,6 @@
 /** ========== REACT ========== */
-import { useContext, useEffect } from 'react';
-
-/** ========== REACT ROUTER ========== */
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-
-/** ========== CONTEXT ========== */
-import { AuthContext } from '../contexts/AuthContext';
 
 /** ========== MUI COMPONENTS ========== */
 import Box from '@mui/material/Box';
@@ -19,10 +14,12 @@ import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
+import { containerStyle } from '../data/Styles';
+import { useAuth } from '../contexts/useAuth';
 
 
 const ManageAccount = () => {
-    const { user } = useContext(AuthContext);
+    const { user } = useAuth();
     const navigate = useNavigate();
     const handleSubmit = () => { };
     useEffect(() => {
@@ -33,11 +30,7 @@ const ManageAccount = () => {
     return (
         <Container
             maxWidth="lg"
-            sx={{
-                px: { xs: 2, sm: 3 },
-                py: { xs: 4, sm: 6 },
-                flexGrow: 1,
-            }}>
+            sx={containerStyle}>
             <Typography variant='h2'>Manage Your Account</Typography>
             <Divider sx={{ my: 4 }} />
             <Box>

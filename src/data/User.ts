@@ -5,21 +5,17 @@ import { db } from './Firebase';
 
 import { JournalEntry, type firestoreJournalEntry } from './JournalEntry';
 
-/**
- * @description A function that updates the user data state. It accepts either a User object or null.
- */
+/** A function that updates the user data state. It accepts either a User object or null. */
 export type setUserData = (value: User | null) => void;
 
-/** @description Set the success state of the page */
+/** Set the success state of the page */
 export type setSuccess = (value: React.SetStateAction<boolean>) => void;
-/** @description A function that sets the error state for the page */
+/** A function that sets the error state for the page */
 export type setErrorState = (value: React.SetStateAction<boolean>) => void;
-/** @description A function that sets success / error state message */
+/** A function that sets success / error state message */
 export type setMessage = (value: React.SetStateAction<string | null>) => void;
 
-/**
- * @description A function that sets an error value (string or null).
- */
+/** A function that sets an error value (string or null). */
 export type setError = (value: React.SetStateAction<string | null>) => void;
 
 export type UserObject = {
@@ -126,6 +122,8 @@ export class User {
 /** =========== FUNCTIONS =========== */
 
 /**
+ *
+ *
  * @param {string} uid The user's ID
  * @param {setError} setError Setter for the error state of the page
  * @param {setUserData} setUserData Setter for the users data in the page

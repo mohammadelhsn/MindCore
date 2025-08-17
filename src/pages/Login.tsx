@@ -1,77 +1,63 @@
-/** ========== MUI COMPONENTS ========== */
-import Alert from '@mui/material/Alert';
+/** ======= REACT & REACT ROUTER ======= */
+import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+
+/** ======= MUI COMPONENTS ======= */
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import Divider from '@mui/material/Divider';
 import Paper from '@mui/material/Paper';
-import Snackbar from '@mui/material/Snackbar';
 import Typography from '@mui/material/Typography';
 
-/** ========== REACT ========== */
-import { useContext, useEffect, useState } from 'react';
+/** ======= CUSTOM COMPONENTS ======= */
+import AuthButton from '../components/AuthButton';
 
-/** ========== REACT ROUTER ========== */
-import { useNavigate } from 'react-router-dom';
+/** ======= CONTEXTS ======= */
+import { useAuth } from '../contexts/useAuth';
+import { useFeedback } from '../contexts/useFeedback';
 
-/** ========== FIREBASE ========== */
-import { FacebookAuthProvider, GithubAuthProvider, GoogleAuthProvider } from 'firebase/auth';
+/** ======= FUNCTIONS, STYLES, CONSTANTS & TYPES ======= */
+import { handleProviderSignUp } from '../data/Firebase';
+import { containerCenter } from '../data/Styles';
+import { facebookProvider, githubProvider, googleProvider } from '../data/Constants';
+import { DASHBOARD } from '../data/Routes';
+import type { LoginButtonState, ProviderName } from '../data/Types';
+import type { AuthProvider } from 'firebase/auth';
 
-/** ========== CONTEXT & HELPERS ========== */
-import { AuthContext } from '../contexts/AuthContext';
-import { handleProviderSignIn } from '../data/Firebase';
-
-/** LOGIN */
-
+/** Log In Page */
 const LogIn = () => {
-    const { user, loading } = useContext(AuthContext);
-    const [error, setError] = useState<string | null>(null);
-    /**
-     * @deprecated Going to be removed soon! This does absolutely nothing
-     */
-    const [loadingPage, setLoadingPage] = useState<boolean>(true);
-    /** =========== LOADING STATE FOR EACH OF THE BUTTONS =========== */
-    const [loadingG, setLoadingG] = useState<boolean>(false);
-    const [loadingGH, setLoadingGH] = useState<boolean>(false);
-    const [loadingF, setLoadingF] = useState<boolean>(false);
-
+    const { user, loading } = useAuth();
+    const { setFeedback } = useFeedback();
     const navigate = useNavigate();
-
+    /** =========== LOADING STATE FOR EACH OF THE BUTTONS =========== */
+    const [loadingButton, setLoadingButton] = useState<LoginButtonState>({
+        google: false,
+        github: false,
+        facebook: false,
+    });
+    const setProviderLoading = (provider: ProviderName, value: boolean) => {
+        setLoadingButton((prev) => ({ ...prev, [provider]: value }));
+    };
+    /**  */
+    const handleProviderSignInWrapper = async (provider: AuthProvider, providerName: ProviderName) => {
+        setProviderLoading(providerName, true);
+        const result = await handleProviderSignUp(provider);
+        setFeedback(result.message, result.success ? 'success' : 'error');
+        setProviderLoading(providerName, false);
+    };
+    const handleGoogleSignIn = () => handleProviderSignInWrapper(googleProvider, 'google');
+    const handleGitHubSignIn = () => handleProviderSignInWrapper(githubProvider, 'github');
+    const handleFacebookSignIn = () => handleProviderSignInWrapper(facebookProvider, 'facebook');
     /** =========== INITIATE THE PROVIDERS =========== */
-    const googleProvider = new GoogleAuthProvider();
-    const githubProvider = new GithubAuthProvider();
-    const facebookProvider = new FacebookAuthProvider();
     useEffect(() => {
         if (user) {
-            navigate('/dashboard');
+            navigate(DASHBOARD);
             return;
         }
-        setLoadingPage(false);
     }, [user, navigate]);
     if (loading) return <Typography>Loading...</Typography>;
-    if (loadingPage) return <Typography>Loading...</Typography>;
-    const action = 'Log In';
     return (
-        <Container
-            maxWidth="lg"
-            sx={{
-                px: { xs: 2, sm: 3 },
-                py: { xs: 4, sm: 6 },
-                flexGrow: 1,
-                display: 'flex',
-                alignItems: 'center', // div center
-                justifyContent: 'center'
-            }}
-        >
-            {/** // TODO: GLOBAL SNACKBAR  */}
-            <Snackbar
-                open={error != null}
-                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-                autoHideDuration={5000}
-                onClose={() => setError(null)}
-            >
-                <Alert severity='error'>{error}</Alert>
-            </Snackbar>
+        <Container maxWidth="xl" sx={containerCenter}>
             <Paper sx={{ width: '100%', maxWidth: 500, p: 4 }}>
                 <Box
                     sx={{
@@ -82,68 +68,9 @@ const LogIn = () => {
                 >
                     <Typography variant="h4">Log In</Typography>
                     <Divider sx={{ mb: 4 }} />
-                    <Button
-                        variant='outlined'
-                        onClick={() => {
-                            setLoadingG(true);
-                            handleProviderSignIn(googleProvider, navigate, setError, setLoadingPage, setLoadingG);
-                        }}
-                        startIcon={<img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" width={20} />}
-                        loading={loadingG}
-                        sx={{
-                            display: 'flex', justifyContent: 'center', alignItems: 'center', transition: '0.3s ease', '&:hover': {
-                                transform: 'scale(1.02)',
-                                bgcolor: ({ palette }) => palette.primary.light,
-                                color: ({ palette }) => palette.text.primary,
-                            }
-                        }}
-                    >
-                        {action} with Google
-                    </Button>
-                    <Button
-                        variant='outlined'
-                        onClick={() => {
-                            setLoadingGH(true);
-                            handleProviderSignIn(githubProvider, navigate, setError, setLoadingPage, setLoadingGH);
-                        }}
-                        startIcon={<img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/github.svg" alt="GitHub" width={20} />}
-                        loading={loadingGH}
-                        sx={{
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            transition: '0.3s ease',
-                            '&:hover': {
-                                transform: 'scale(1.02)',
-                                bgcolor: ({ palette }) => palette.primary.light,
-                                color: ({ palette }) => palette.text.primary,
-                            }
-                        }}
-                    >
-                        {action} with GitHub
-                    </Button>
-                    <Button
-                        variant='outlined'
-                        onClick={() => {
-                            setLoadingF(true);
-                            handleProviderSignIn(facebookProvider, navigate, setError, setLoadingPage, setLoadingF);
-                        }}
-                        startIcon={<img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/facebook.svg" alt="Facebook" width={20} />}
-                        loading={loadingF}
-                        sx={{
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            transition: '0.3s ease',
-                            '&:hover': {
-                                transform: 'scale(1.02)',
-                                bgcolor: ({ palette }) => palette.primary.light,
-                                color: ({ palette }) => palette.text.primary,
-                            }
-                        }}
-                    >
-                        {action} with Facebook
-                    </Button>
+                    <AuthButton provider='google' action='login' handler={handleGoogleSignIn} loading={loadingButton.google} />
+                    <AuthButton provider='github' action='login' handler={handleGitHubSignIn} loading={loadingButton.github} />
+                    <AuthButton provider='facebook' action='login' handler={handleFacebookSignIn} loading={loadingButton.facebook} />
                 </Box>
             </Paper>
         </Container>

@@ -1,5 +1,5 @@
 /** ========== React & Routing ==========*/
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 /** ========== Firebase ========== */
@@ -7,11 +7,9 @@ import { doc, updateDoc } from 'firebase/firestore';
 import { db } from '../data/Firebase';
 
 /** ========== Context & Data ========== */
-import { AuthContext } from '../contexts/AuthContext';
 import { JournalEntry, type firestoreJournalEntry } from '../data/JournalEntry';
 
 /** ========== MUI Components ==========*/
-import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
@@ -31,7 +29,6 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Paper from '@mui/material/Paper';
 import Select from '@mui/material/Select';
-import Snackbar from '@mui/material/Snackbar';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 import TextField from '@mui/material/TextField';
@@ -44,13 +41,15 @@ import DescriptionIcon from '@mui/icons-material/Description';
 import NoteAltIcon from '@mui/icons-material/NoteAlt';
 import PublishIcon from '@mui/icons-material/Publish';
 import SettingsIcon from '@mui/icons-material/Settings';
+import { useAuth } from '../contexts/useAuth';
+import { alignTextIcon, containerStyle, iconStyle } from '../data/Styles';
+import { DASHBOARD } from '../data/Routes';
+import { useFeedback } from '../contexts/useFeedback';
 
 const ViewEntry = () => {
-    const { user, userData } = useContext(AuthContext);
+    const { user, userData } = useAuth();
+    const { setFeedback } = useFeedback();
     const [journal, setJournal] = useState<JournalEntry | null>(null);
-    const [settingSuccess, setSettingSuccess] = useState(false);
-    const [settingError, setSettingError] = useState(false);
-    const [message, setMessage] = useState<string | null>(null);
     const [isPrivate, setIsPrivate] = useState(false);
     const [category, setCategory] = useState('uncategorized');
     const [password, setPassword] = useState('');
@@ -73,7 +72,7 @@ const ViewEntry = () => {
     const handleChange = (_: React.SyntheticEvent, newValue: number) => {
         setValue(newValue);
     };
-    if (journal === null) return (<Typography>No such journal was found! Try again!</Typography>);
+    if (!journal) return (<Typography>No such journal was found! Try again!</Typography>);
     const EditableTitle = () => {
         const [editing, setEditing] = useState(false);
         const [tempTitle, setTempTitle] = useState(journal.title);
@@ -88,12 +87,10 @@ const ViewEntry = () => {
                     const updatedJournals: firestoreJournalEntry[] = [];
                     userData.journals.forEach((jour) => updatedJournals.push(jour.toFirestore()));
                     await updateDoc(docRef, { journals: updatedJournals });
-                    setMessage('Successfully updated the title!');
-                    setSettingSuccess(true);
+                    setFeedback('Successfully updated the title!', 'success');
                 }
             } catch (error) {
-                setMessage('Oops, an unexpected error has occurred!');
-                setSettingError(true);
+                setFeedback('Oops, an unexpected error has occurred!', 'error');
                 console.error(error);
             }
         };
@@ -124,9 +121,13 @@ const ViewEntry = () => {
             <Typography
                 variant="h5"
                 onClick={() => setEditing(true)}
-                sx={{ cursor: 'pointer', '&:hover': { textDecoration: 'underline' }, display: 'flex', alignItems: 'center' }}
+                sx={{
+                    cursor: 'pointer',
+                    '&:hover': { textDecoration: 'underline' },
+                    ...alignTextIcon
+                }}
             >
-                <NoteAltIcon sx={{ mr: 1 }} /> {journal.title || 'Click to edit title'}
+                <NoteAltIcon sx={iconStyle} /> {journal.title || 'Click to edit title'}
             </Typography>
         );
     };
@@ -144,12 +145,10 @@ const ViewEntry = () => {
                     const updatedJournals: firestoreJournalEntry[] = [];
                     userData.journals.forEach((jour) => updatedJournals.push(jour.toFirestore()));
                     await updateDoc(docRef, { journals: updatedJournals });
-                    setMessage('Successfully updated the body!');
-                    setSettingSuccess(true);
+                    setFeedback('Successfully updated the body!', 'success');
                 }
             } catch (error) {
-                setMessage('Oops, an unexpected error has occurred!');
-                setSettingError(true);
+                setFeedback('Oops, an unexpected error has occurred!', 'error');
                 console.error(error);
             }
         };
@@ -206,9 +205,9 @@ const ViewEntry = () => {
             const updatedJournals: firestoreJournalEntry[] = [];
             temp.forEach((jour) => updatedJournals.push(jour.toFirestore()));
             await updateDoc(docRef, { journals: updatedJournals });
-            setMessage('Successfully deleted the journal');
-            setSettingSuccess(true);
-            navigate('/dashboard');
+            setFeedback('Successfully deleted the journal', 'success');
+            navigate(DASHBOARD);
+            return;
         }
     };
     /*
@@ -216,9 +215,11 @@ const ViewEntry = () => {
     TODO: Add password check on this page in case someone tries to bypass it
     */
     return (
-        <Container maxWidth="lg" sx={{ px: { xs: 2, sm: 3 }, py: { xs: 4, sm: 6 }, flexGrow: 1 }}>
+        <Container maxWidth="lg" sx={containerStyle}>
             <Dialog open={openDialog}>
-                <DialogTitle sx={{ display: 'flex', alignItems: 'center' }}><DeleteIcon color='error' sx={{ mr: 1 }} />Delete Journal</DialogTitle>
+                <DialogTitle sx={alignTextIcon}>
+                    <DeleteIcon color='error' sx={{ mr: 1 }} />Delete Journal
+                </DialogTitle>
                 <DialogContent>
                     <DialogContentText>Are you sure you want to delete this?</DialogContentText>
                 </DialogContent>
@@ -227,32 +228,6 @@ const ViewEntry = () => {
                     <Button variant='contained' onClick={handleDelete} color='error'>Delete</Button>
                 </DialogActions>
             </Dialog>
-            <Snackbar
-                open={settingSuccess}
-                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-                autoHideDuration={5000}
-                onClose={() => {
-                    setSettingSuccess(false);
-                    setMessage(null);
-                }}
-            >
-                <Alert severity='success'>
-                    {message}
-                </Alert>
-            </Snackbar>
-            <Snackbar
-                open={settingError}
-                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-                autoHideDuration={5000}
-                onClose={() => {
-                    setSettingError(false);
-                    setMessage(null);
-                }}
-            >
-                <Alert severity='error'>
-                    {message}
-                </Alert>
-            </Snackbar>
             <Paper sx={{ p: 2 }}>
                 <Tabs value={value} onChange={handleChange} aria-label='Journal Tabs'>
                     <Tab icon={<DescriptionIcon />} label="Content" />
@@ -260,11 +235,15 @@ const ViewEntry = () => {
                 </Tabs>
                 {value === 0 && (
                     <Card elevation={3} sx={{ mx: 'auto', mt: 5, p: 3 }}>
-                        <CardHeader title={<><EditableTitle /><Divider sx={{ my: 2 }} /></>} />
+                        <CardHeader
+                            title={
+                                <>
+                                    <EditableTitle />
+                                    <Divider sx={{ my: 2 }} />
+                                </>}
+                        />
                         <CardContent>
-                            <Box>
-                                <EditableBody />
-                            </Box>
+                            <Box><EditableBody /></Box>
                         </CardContent>
                     </Card>
                 )}
@@ -272,7 +251,7 @@ const ViewEntry = () => {
                     <Card elevation={3} sx={{ mt: 5 }}>
                         <CardHeader title={
                             <>
-                                <Typography variant='inherit' sx={{ display: 'flex', alignItems: 'center' }}><SettingsIcon sx={{ mr: 1 }} color='primary' />Config</Typography>
+                                <Typography variant='inherit' sx={alignTextIcon}><SettingsIcon sx={iconStyle} />Config</Typography>
                                 <Divider sx={{ mt: 2 }} />
                             </>
                         } />
@@ -312,7 +291,7 @@ const ViewEntry = () => {
                     <Card elevation={3}>
                         <CardHeader title={
                             <>
-                                <Typography variant='inherit' sx={{ display: 'flex', alignItems: 'center' }}><CategoryIcon color='primary' sx={{ mr: 1 }} />Categories</Typography>
+                                <Typography variant='inherit' sx={alignTextIcon}><CategoryIcon sx={iconStyle} />Categories</Typography>
                                 <Divider sx={{ mt: 2 }} />
                             </>
                         } />
@@ -344,7 +323,7 @@ const ViewEntry = () => {
                     <Card elevation={3}>
                         <CardHeader title={
                             <>
-                                <Typography variant='inherit' sx={{ display: 'flex', alignItems: 'center' }}><DeleteIcon color='error' sx={{ mr: 1 }} />Delete this Journal</Typography>
+                                <Typography variant='inherit' sx={alignTextIcon}><DeleteIcon color='error' sx={{ mr: 1 }} />Delete this Journal</Typography>
                                 <Divider sx={{ mt: 2 }} />
                             </>
                         }

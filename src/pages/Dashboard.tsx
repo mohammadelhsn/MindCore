@@ -1,13 +1,8 @@
-/** ========== REACT ========== */
-import { useContext, useEffect, useState } from 'react';
-
-/** ========== REACT ROUTER ========== */
+/** ======= REACT ======= */
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-/** ========== AUTH ========== */
-import { AuthContext } from '../contexts/AuthContext';
-
-/** ========== MUI COMPONENTS ========== */
+/** ======= MUI COMPONENTS ======= */
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
@@ -15,54 +10,34 @@ import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import CardHeader from '@mui/material/CardHeader';
 import Container from '@mui/material/Container';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
 import Divider from '@mui/material/Divider';
 import Fab from '@mui/material/Fab';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
-import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import Skeleton from '@mui/material/Skeleton';
 
-/** ========== MUI HOOKS & TYPES ========== */
-import { useTheme } from '@mui/material';
-import type { SxProps } from '@mui/material';
-
-/** ========== MUI ICONS ========== */
+/** ======= MUI ICONS ======= */
 import Add from '@mui/icons-material/Add';
 
+/** ======= CONTEXTS ======= */
+import { useAuth } from '../contexts/useAuth';
 
-/** STYLES */
-
-const cardStyles: SxProps = {
-    transition: '0.3s ease',
-    '&:hover': {
-        transform: 'scale(1.03)'
-    }
-};
-
-const containerStyle = {
-    px: { xs: 2, sm: 3 },
-    py: { xs: 4, sm: 6 },
-    flexGrow: 1,
-};
+/** ======= DATA & ROUTES ======= */
+import { cardStyles, containerStyle } from '../data/Styles';
+import { NEW_ENTRY, SIGNUP, VIEW_ENTRY } from '../data/Routes';
+import PasswordDialog from '../components/PasswordDialog';
 
 /** DASHBOARD */
-
 const Dashboard = () => {
-    const { palette } = useTheme();
-    const { user, userData, loading } = useContext(AuthContext);
+    const { user, userData, loading } = useAuth();
     const [openDialog, setOpenDialog] = useState(false);
     const [password, setPassword] = useState('');
     const [passwordError, setPasswordError] = useState<string | null>(null);
     const navigate = useNavigate();
     useEffect(() => {
         if (!user) {
-            navigate('/signup');
+            navigate(SIGNUP);
         }
     }, [user, navigate]);
     if (loading) return (
@@ -77,7 +52,7 @@ const Dashboard = () => {
     if (!userData) return <p>No user data found.</p>;
     return (
         <Container
-            maxWidth="lg"
+            maxWidth="xl"
             sx={containerStyle}
         >
             <Typography variant='h3'>
@@ -99,22 +74,7 @@ const Dashboard = () => {
                     {user && userData && userData.journals.map((journal, index) => {
                         return (
                             <Grid size={{ xs: 2, sm: 4, md: 4 }} key={`${index}-${journal.id}`}>
-                                <Dialog open={openDialog}>
-                                    <DialogTitle>This Entry is password protected</DialogTitle>
-                                    <DialogContent>
-                                        <DialogContentText>Enter the password to view this</DialogContentText>
-                                        <TextField value={password} type='password' error={passwordError != null} helperText={passwordError} onChange={(e) => { setPassword(e.target.value); setPasswordError(null); }} />
-                                    </DialogContent>
-                                    <DialogActions>
-                                        <Button onClick={() => {
-                                            if (journal.password === password) {
-                                                navigate(`/viewEntry/${journal.id}`);
-                                            } else {
-                                                setPasswordError("Password incorrect!");
-                                            }
-                                        }} disabled={!password || password.trim().length == 0}>Unlock</Button>
-                                    </DialogActions>
-                                </Dialog>
+                                <PasswordDialog openDialog={openDialog} setOpenDialog={setOpenDialog} password={password} setPassword={setPassword} passwordError={passwordError} setPasswordError={setPasswordError} journalPassword={journal.password ? journal.password : ''} id={journal.id} />
                                 <Card elevation={3} sx={cardStyles}>
                                     <CardHeader
                                         title={
@@ -135,11 +95,11 @@ const Dashboard = () => {
                                         <Button onClick={() => {
                                             if (journal.passwordProtected) {
                                                 setOpenDialog(true);
-                                            } else navigate(`/viewEntry/${journal.id}`);
+                                            } else navigate(VIEW_ENTRY(journal.id));
                                         }} variant='text' sx={{
                                             transition: '0.3s ease', '&:hover': {
-                                                bgcolor: palette.primary.main,
-                                                color: palette.text.primary,
+                                                bgcolor: ({ palette }) => palette.primary.main,
+                                                color: ({ palette }) => palette.text.primary,
                                             }
                                         }}>
                                             {journal.passwordProtected ? 'Unlock' : 'View Entry'}
@@ -157,7 +117,7 @@ const Dashboard = () => {
                 right: 24,
                 zIndex: 1000,
             }}>
-                <Fab color="primary" aria-label="add" onClick={() => navigate('/newEntry')}
+                <Fab color="primary" aria-label="add" onClick={() => navigate(NEW_ENTRY)}
                     sx={{
                         '&:hover .spin-icon': {
                             transform: 'rotate(180deg) scale(1.2)',

@@ -1,20 +1,9 @@
-import { createContext, useEffect, useState, type ReactNode } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { onAuthStateChanged, type User } from 'firebase/auth';
 import { auth, db } from '../data/Firebase';
 import { User as UserData, type UserObject } from '../data/User';
 import { doc, onSnapshot } from 'firebase/firestore';
-
-interface AuthContextType {
-    user: User | null;
-    loading: boolean;
-    userData: UserData | null;
-}
-
-export const AuthContext = createContext<AuthContextType>({
-    user: null,
-    loading: true,
-    userData: null
-});
+import { AuthContext } from './useAuth';
 
 const AuthProvider = ({ children }: { children: ReactNode; }) => {
     /** @description Firebase User */
@@ -54,4 +43,4 @@ const AuthProvider = ({ children }: { children: ReactNode; }) => {
     );
 };
 
-export { AuthProvider };
+export default AuthProvider;

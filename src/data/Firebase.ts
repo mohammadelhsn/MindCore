@@ -1,19 +1,22 @@
 /** ========== IMPORTS ============ */
 import { FirebaseError, initializeApp } from 'firebase/app';
 import { getAuth, signInWithPopup } from 'firebase/auth';
-import { doc, getDoc, getFirestore, setDoc } from 'firebase/firestore';
+import {
+	doc,
+	getDoc,
+	initializeFirestore,
+	persistentLocalCache,
+	persistentMultipleTabManager,
+	setDoc,
+} from 'firebase/firestore';
 import { User } from './User';
-import { type NavigateFunction } from 'react-router-dom';
 
 /** ========== TYPES ============== */
 
 import type { AuthProvider } from 'firebase/auth';
-
-type setLoading = (value: React.SetStateAction<boolean>) => void;
-type setError = (value: React.SetStateAction<string | null>) => void;
+import FirebaseResponse from './FirebaseResponse';
 
 /** ======= FIREBASE CONFIG ======= */
-
 const firebaseConfig = {
 	apiKey: 'AIzaSyDh7gmCY_23xuF8DVqyv8MxU2srxjisK8Y',
 	authDomain: 'mindcore-dev.firebaseapp.com',
@@ -24,20 +27,20 @@ const firebaseConfig = {
 	measurementId: 'G-C26LYWFD0C',
 };
 
-/**
- * @description Firebase App
- */
+/** Firebase App */
 const app = initializeApp(firebaseConfig);
 
-/** ======= EXPORTED MEMBERS ======= */
-
-/** @description Firebase Authentication */
+/** Firebase Authentication */
 export const auth = getAuth(app);
 
-/** @description Firebase Firestore */
-export const db = getFirestore(app);
+/** Firebase Firestore */
+export const db = initializeFirestore(app, {
+	localCache: persistentLocalCache({
+		tabManager: persistentMultipleTabManager(),
+	}),
+});
 
-/** @description Firebase Errors and their responses */
+/** Firebase Errors and their responses */
 export const firebaseErrors: Record<string, string> = {
 	'auth/popup-closed-by-user': 'Sign-in popup closed before completion.',
 	'auth/cancelled-popup-request':
@@ -52,106 +55,49 @@ export const firebaseErrors: Record<string, string> = {
 };
 
 /**
- * @description Converts FirebaseError.code to a string for handling
- *
- * @param error The error to handle
- * @param setError The state setter for the page
- */
-export function handleFirebaseAuthError(
-	error: FirebaseError,
-	setError: setError
-) {
-	const e = firebaseErrors[error.code] || 'An unknown Firebase error occurred!';
-	if (e == 'An unknown Firebase error occurred!') console.error(error);
-	setError(e);
-	return;
-}
-
-/**
- * @description Function to handle the sign in for any provider
- *
- * @param {AuthProvider} provider The Google auth provider with the necessary scopes
- * @param {NavigateFunction} navigate The navigate function
- * @param {setError} setError The error state setter for the page
- * @param {setLoading} setLoading The loading state setter for the page
- */
-export async function handleProviderSignIn(
-	provider: AuthProvider,
-	navigate: NavigateFunction,
-	setError: setError,
-	setLoadingPage: setLoading,
-	setLoadingButton: setLoading
-) {
-	try {
-		await signInWithPopup(auth, provider);
-		navigate('/dashboard');
-	} catch (error) {
-		if (error instanceof FirebaseError) {
-			handleFirebaseAuthError(error, setError);
-		} else {
-			setError('An unknown error occurred.');
-			console.error((error as Error).message);
-		}
-	} finally {
-		setLoadingPage(false);
-		setLoadingButton(false);
-	}
-}
-
-/**
- * @description Function that handles Provider sign up
+ * Function that handles Provider sign up
  *
  * @param provider The Provider for Google Auth
  * @param navigate The navigate function
  * @param setError The setter for the error state
  * @param setLoading The setter for the loading state
  */
-export async function handleProviderSignUp(
-	provider: AuthProvider,
-	navigate: NavigateFunction,
-	setError: setError,
-	setLoading: setLoading,
-	setLoadingButton: setLoading
-) {
+export async function handleProviderSignUp(provider: AuthProvider) {
 	try {
 		const result = await signInWithPopup(auth, provider);
 		if (!result.user) {
-			setError('Authentication failed: no user returned.');
-			return;
+			return new FirebaseResponse({
+				success: false,
+				data: null,
+				error: null,
+				message: 'Authentication failed: no user returned.',
+			});
 		}
 
-		if (result.user) {
-			const fUser = result.user;
-			const userRef = doc(db, 'users', fUser.uid);
-			const docSnap = await getDoc(userRef);
-			if (!docSnap.exists()) {
-				const userData = new User({
-					uid: fUser.uid,
-					theme: 'system',
-					twoFactorEnabled: false,
-					role: 'user',
-					language: 'en',
-					name: fUser.displayName
-						? fUser.displayName
-						: fUser.email
-						? fUser.email
-						: '',
-					journals: [],
-				});
-				await setDoc(userRef, userData.toFirestore(), { merge: true });
-			}
-			navigate('/dashboard');
-			return;
+		const fUser = result.user;
+		const userRef = doc(db, 'users', fUser.uid);
+		const docSnap = await getDoc(userRef);
+		if (!docSnap.exists()) {
+			const userData = new User({
+				uid: fUser.uid,
+				theme: 'system',
+				twoFactorEnabled: false,
+				role: 'user',
+				language: 'en',
+				name: fUser.displayName || fUser.email || 'New User',
+				journals: [],
+			});
+			await setDoc(userRef, userData.toFirestore(), { merge: true });
 		}
+
+		return new FirebaseResponse({
+			success: true,
+			data: null,
+			error: null,
+			message: 'Sign-up successful!',
+		});
 	} catch (error) {
-		if (error instanceof FirebaseError) {
-			handleFirebaseAuthError(error, setError);
-		} else {
-			setError('An unknown error occurred.');
-			console.error((error as Error).message);
-		}
-	} finally {
-		setLoading(false);
-		setLoadingButton(false);
+		console.error(error);
+		return new FirebaseResponse(error as FirebaseError);
 	}
 }

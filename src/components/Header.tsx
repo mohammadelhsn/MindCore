@@ -1,7 +1,7 @@
 // React
 
 import { NavLink, useNavigate } from 'react-router-dom';
-import { useState, useContext, type MouseEvent } from 'react';
+import { useState, type MouseEvent } from 'react';
 
 // Material UI 
 
@@ -27,9 +27,10 @@ import PsychologyIcon from '@mui/icons-material/Psychology';
 import LoginIcon from '@mui/icons-material/Login';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 
-import { AuthContext } from '../contexts/AuthContext';
 import { signOut } from 'firebase/auth';
+// ! Why is this even here?
 import { auth } from '../data/Firebase';
+import { useAuth } from '../contexts/useAuth';
 
 const StyledExternalLink = styled(NavLink)(({ theme }) => ({
     color: 'inherit',
@@ -55,7 +56,7 @@ const Header = () => {
     const handleClose = () => {
         setAnchorEl(null);
     };
-    const { user } = useContext(AuthContext);
+    const { user } = useAuth();
     return (
         <AppBar
             position="static"
@@ -65,11 +66,13 @@ const Header = () => {
             }}
         >
             <Toolbar>
+                {/** // TODO: Move to a component */}
                 <StyledExternalLink to="/">
                     <Tooltip title="Go Home">
                         <PsychologyIcon />
                     </Tooltip>
                 </StyledExternalLink>
+                {/** //* VERTICAL DIVIDER */}
                 <Divider orientation='vertical' sx={{
                     borderColor: 'white',
                     borderWidth: '1px',
@@ -77,6 +80,7 @@ const Header = () => {
                     height: 20,    // set height explicitly
                     mr: 1,         // horizontal margin to add space left and right
                 }} />
+                {/** // TODO: Move to a component */}
                 <StyledExternalLink to="/dashboard">
                     <Tooltip title="View Dashboard">
                         <Button color="inherit" variant="text">
@@ -84,6 +88,7 @@ const Header = () => {
                         </Button>
                     </Tooltip>
                 </StyledExternalLink>
+                {/** // TODO: Move to a component */}
                 <StyledExternalLink to="/learn">
                     <Tooltip title="Learn">
                         <Button color="inherit" variant='text'>
@@ -96,6 +101,7 @@ const Header = () => {
                 }} />
                 {!user &&
                     <Box>
+                        {/** // TODO: Move to a component */}
                         <StyledExternalLink to="/login">
                             {isSmallScreen ?
                                 (<IconButton color='inherit'><LoginIcon /></IconButton>)
@@ -104,6 +110,7 @@ const Header = () => {
                                     Log In
                                 </Button>)}
                         </StyledExternalLink>
+                        {/** // TODO: Move to a component */}
                         <StyledExternalLink to="/signup">
                             {isSmallScreen ? <IconButton color='inherit'><PersonAddIcon /></IconButton> : <Button color='inherit' variant='contained' startIcon={<PersonAddIcon fontSize={'small'} />}>
                                 Sign Up

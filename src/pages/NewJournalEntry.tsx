@@ -1,11 +1,6 @@
 /** ========== REACT ========== */
-import { useContext, useEffect, useState } from 'react';
-
-/** ========== REACT ROUTER ========== */
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-
-/** ========== CONTEXT ========== */
-import { AuthContext } from '../contexts/AuthContext';
 
 /** ========== FIREBASE ========== */
 import { doc, updateDoc } from 'firebase/firestore';
@@ -15,7 +10,6 @@ import { db } from '../data/Firebase';
 import { JournalEntry } from '../data/JournalEntry';
 
 /** ========== MUI COMPONENTS ========== */
-import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
@@ -28,12 +22,14 @@ import Divider from '@mui/material/Divider';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
-import Snackbar from '@mui/material/Snackbar';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
 import Stepper from '@mui/material/Stepper';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
+import { useAuth } from '../contexts/useAuth';
+import { containerStyle } from '../data/Styles';
+import { useFeedback } from '../contexts/useFeedback';
 
 const steps = ['Title', 'Settings & Config'];
 
@@ -46,10 +42,8 @@ const NewJournalPage = () => {
     const [isPrivate, setIsPrivate] = useState(false);
     const [password, setPassword] = useState<string>('');
     const [category, setCategory] = useState('uncategorized');
-    const [settingSuccess, setSettingSuccess] = useState(false);
-    const [settingError, setSettingError] = useState(false);
-    const [message, setMessage] = useState<string | null>(null);
-    const { user, userData } = useContext(AuthContext);
+    const { user, userData } = useAuth();
+    const { setFeedback } = useFeedback();
     const navigate = useNavigate();
     const handleNext = () => setActiveStep((prev) => Math.min(prev + 1, steps.length - 1));
     const handleBack = () => setActiveStep((prev) => Math.max(prev - 1, 0));
@@ -66,12 +60,10 @@ const NewJournalPage = () => {
                     journals.push(newJournalEntry.toFirestore());
                     await updateDoc(userRef, { journals: journals });
                     userData.journals.push(newJournalEntry);
-                    setMessage('New journal successfully created');
-                    setSettingSuccess(true);
+                    setFeedback('New journal successfully created', 'success');
                     navigate(`/viewEntry/${newJournalEntry.id}`);
                 } catch (error) {
-                    setMessage('Oops, an unexpected error has occurred!');
-                    setSettingError(true);
+                    setFeedback('Oops, an unexpected error has occurred!', 'error');
                     console.error(error);
                 }
             };
@@ -87,37 +79,7 @@ const NewJournalPage = () => {
     return (
         <Container
             maxWidth="lg"
-            sx={{
-                px: { xs: 2, sm: 3 },
-                py: { xs: 4, sm: 6 },
-                flexGrow: 1,
-            }}>
-            <Snackbar
-                open={settingSuccess}
-                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-                autoHideDuration={5000}
-                onClose={() => {
-                    setSettingSuccess(false);
-                    setMessage(null);
-                }}
-            >
-                <Alert severity='success'>
-                    {message}
-                </Alert>
-            </Snackbar>
-            <Snackbar
-                open={settingError}
-                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-                autoHideDuration={5000}
-                onClose={() => {
-                    setSettingError(false);
-                    setMessage(null);
-                }}
-            >
-                <Alert severity='error'>
-                    {message}
-                </Alert>
-            </Snackbar>
+            sx={containerStyle}>
             <Box sx={{ width: '100%', maxWidth: 600, mx: 'auto', mt: 4 }}>
                 <Stepper activeStep={activeStep} alternativeLabel>
                     {steps.map((label) => (
@@ -192,11 +154,8 @@ const NewJournalPage = () => {
                                         onChange={(e) => setCategory(e.target.value)}
                                         displayEmpty
                                     >
-                                        <MenuItem value="" disabled>
-                                            Select Category
-                                        </MenuItem>
+                                        <MenuItem value="" disabled>Select Category</MenuItem>
                                         <MenuItem value="uncategorized">Uncategorized</MenuItem>
-
                                         <MenuItem value="personal">Personal</MenuItem>
                                         <MenuItem value="work">Work</MenuItem>
                                         <MenuItem value="dreams">Dreams</MenuItem>
