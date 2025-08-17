@@ -1,7 +1,7 @@
 import { createContext, useEffect, useState, type ReactNode } from 'react';
 import { onAuthStateChanged, type User } from 'firebase/auth';
 import { auth, db } from '../data/Firebase';
-import { User as UserData } from '../data/User';
+import { User as UserData, type UserObject } from '../data/User';
 import { doc, onSnapshot } from 'firebase/firestore';
 
 interface AuthContextType {
@@ -32,7 +32,7 @@ const AuthProvider = ({ children }: { children: ReactNode; }) => {
                 const docRef = doc(db, "users", currentUser.uid);
                 unsubscribeFirestore = onSnapshot(docRef, (docSnap) => {
                     if (docSnap.exists()) {
-                        setUserData(docSnap.data() as UserData);
+                        setUserData(new UserData(docSnap.data() as UserObject));
                     } else {
                         setUserData(null);
                     }

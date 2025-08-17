@@ -64,7 +64,7 @@ const Dashboard = () => {
         if (!user) {
             navigate('/signup');
         }
-    }, [user]);
+    }, [user, navigate]);
     if (loading) return (
         <Container maxWidth="lg" sx={containerStyle}>
             <Paper>
@@ -96,57 +96,59 @@ const Dashboard = () => {
                             </CardContent>
                         </Card>
                     )}
-                    {user && userData && userData.journals.map((journal, index) => (
-                        <Grid size={{ xs: 2, sm: 4, md: 4 }} key={`${index}-${journal.id}`}>
-                            <Dialog open={openDialog}>
-                                <DialogTitle>This Entry is password protected</DialogTitle>
-                                <DialogContent>
-                                    <DialogContentText>Enter the password to view this</DialogContentText>
-                                    <TextField value={password} type='password' error={passwordError != null} helperText={passwordError} onChange={(e) => { setPassword(e.target.value); setPasswordError(null); }} />
-                                </DialogContent>
-                                <DialogActions>
-                                    <Button onClick={() => {
-                                        if (journal.password === password) {
-                                            navigate(`/viewEntry/${journal.id}`);
-                                        } else {
-                                            setPasswordError("Password incorrect!");
+                    {user && userData && userData.journals.map((journal, index) => {
+                        return (
+                            <Grid size={{ xs: 2, sm: 4, md: 4 }} key={`${index}-${journal.id}`}>
+                                <Dialog open={openDialog}>
+                                    <DialogTitle>This Entry is password protected</DialogTitle>
+                                    <DialogContent>
+                                        <DialogContentText>Enter the password to view this</DialogContentText>
+                                        <TextField value={password} type='password' error={passwordError != null} helperText={passwordError} onChange={(e) => { setPassword(e.target.value); setPasswordError(null); }} />
+                                    </DialogContent>
+                                    <DialogActions>
+                                        <Button onClick={() => {
+                                            if (journal.password === password) {
+                                                navigate(`/viewEntry/${journal.id}`);
+                                            } else {
+                                                setPasswordError("Password incorrect!");
+                                            }
+                                        }} disabled={!password || password.trim().length == 0}>Unlock</Button>
+                                    </DialogActions>
+                                </Dialog>
+                                <Card elevation={3} sx={cardStyles}>
+                                    <CardHeader
+                                        title={
+                                            <>
+                                                <Box>{journal.title}</Box>
+                                                <Divider sx={{ mt: 1 }} />
+                                            </>
                                         }
-                                    }} disabled={!password || password.trim().length == 0}>Unlock</Button>
-                                </DialogActions>
-                            </Dialog>
-                            <Card elevation={3} sx={cardStyles}>
-                                <CardHeader
-                                    title={
-                                        <>
-                                            <Box>{journal.title}</Box>
-                                            <Divider sx={{ mt: 1 }} />
-                                        </>
-                                    }
-                                />
-                                <CardContent>
-                                    <Typography>
-                                        {journal.content.trim().length > 0
-                                            ? journal.getBrief()
-                                            : 'There is no content yet! Edit me!'}
-                                    </Typography>
-                                </CardContent>
-                                <CardActions sx={{ paddingLeft: 1 }}>
-                                    <Button onClick={() => {
-                                        if (journal.passwordProtected) {
-                                            setOpenDialog(true);
-                                        } else navigate(`/viewEntry/${journal.id}`);
-                                    }} variant='text' sx={{
-                                        transition: '0.3s ease', '&:hover': {
-                                            bgcolor: palette.primary.main,
-                                            color: palette.text.primary,
-                                        }
-                                    }}>
-                                        {journal.passwordProtected ? 'Unlock' : 'View Entry'}
-                                    </Button>
-                                </CardActions>
-                            </Card>
-                        </Grid>
-                    ))}
+                                    />
+                                    <CardContent>
+                                        <Typography>
+                                            {journal.content.trim().length > 0
+                                                ? journal.getBrief()
+                                                : 'There is no content yet! Edit me!'}
+                                        </Typography>
+                                    </CardContent>
+                                    <CardActions sx={{ paddingLeft: 1 }}>
+                                        <Button onClick={() => {
+                                            if (journal.passwordProtected) {
+                                                setOpenDialog(true);
+                                            } else navigate(`/viewEntry/${journal.id}`);
+                                        }} variant='text' sx={{
+                                            transition: '0.3s ease', '&:hover': {
+                                                bgcolor: palette.primary.main,
+                                                color: palette.text.primary,
+                                            }
+                                        }}>
+                                            {journal.passwordProtected ? 'Unlock' : 'View Entry'}
+                                        </Button>
+                                    </CardActions>
+                                </Card>
+                            </Grid>
+                        );
+                    })}
                 </Grid>
             </Paper>
             <Box sx={{

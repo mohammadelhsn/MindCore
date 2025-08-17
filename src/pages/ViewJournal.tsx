@@ -45,8 +45,6 @@ import NoteAltIcon from '@mui/icons-material/NoteAlt';
 import PublishIcon from '@mui/icons-material/Publish';
 import SettingsIcon from '@mui/icons-material/Settings';
 
-
-
 const ViewEntry = () => {
     const { user, userData } = useContext(AuthContext);
     const [journal, setJournal] = useState<JournalEntry | null>(null);
@@ -71,7 +69,7 @@ const ViewEntry = () => {
                 setJournal(j);
             }
         }
-    }, []);
+    }, [id, user, userData, navigate]);
     const handleChange = (_: React.SyntheticEvent, newValue: number) => {
         setValue(newValue);
     };

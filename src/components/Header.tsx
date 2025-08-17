@@ -1,5 +1,6 @@
 // React
 
+import { NavLink, useNavigate } from 'react-router-dom';
 import { useState, useContext, type MouseEvent } from 'react';
 
 // Material UI 
@@ -16,6 +17,9 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Divider from '@mui/material/Divider';
 import ListItemIcon from '@mui/material/ListItemIcon';
+import Box from '@mui/material/Box';
+import { styled, useTheme } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
 
 import Settings from '@mui/icons-material/Settings';
 import Logout from '@mui/icons-material/Logout';
@@ -23,13 +27,9 @@ import PsychologyIcon from '@mui/icons-material/Psychology';
 import LoginIcon from '@mui/icons-material/Login';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 
-import Box from '@mui/material/Box';
-import { styled, useTheme } from '@mui/material/styles';
-import { NavLink, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../contexts/AuthContext';
 import { signOut } from 'firebase/auth';
 import { auth } from '../data/Firebase';
-import useMediaQuery from '@mui/material/useMediaQuery';
 
 const StyledExternalLink = styled(NavLink)(({ theme }) => ({
     color: 'inherit',
@@ -60,8 +60,8 @@ const Header = () => {
         <AppBar
             position="static"
             sx={{
-                bgcolor: (theme) => theme.palette.background.default,
-                color: (theme) => theme.palette.text.primary,
+                bgcolor: ({ palette }) => palette.background.default,
+                color: ({ palette }) => palette.text.primary,
             }}
         >
             <Toolbar>

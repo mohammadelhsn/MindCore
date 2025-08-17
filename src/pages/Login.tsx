@@ -8,9 +8,6 @@ import Paper from '@mui/material/Paper';
 import Snackbar from '@mui/material/Snackbar';
 import Typography from '@mui/material/Typography';
 
-/** ========== MUI HOOKS ========== */
-import { useTheme } from '@mui/material';
-
 /** ========== REACT ========== */
 import { useContext, useEffect, useState } from 'react';
 
@@ -28,7 +25,6 @@ import { handleProviderSignIn } from '../data/Firebase';
 
 const LogIn = () => {
     const { user, loading } = useContext(AuthContext);
-    const { palette } = useTheme();
     const [error, setError] = useState<string | null>(null);
     /**
      * @deprecated Going to be removed soon! This does absolutely nothing
@@ -48,11 +44,12 @@ const LogIn = () => {
     useEffect(() => {
         if (user) {
             navigate('/dashboard');
+            return;
         }
         setLoadingPage(false);
     }, [user, navigate]);
-    loadingPage;
     if (loading) return <Typography>Loading...</Typography>;
+    if (loadingPage) return <Typography>Loading...</Typography>;
     const action = 'Log In';
     return (
         <Container
@@ -62,10 +59,11 @@ const LogIn = () => {
                 py: { xs: 4, sm: 6 },
                 flexGrow: 1,
                 display: 'flex',
-                alignItems: 'center',
+                alignItems: 'center', // div center
                 justifyContent: 'center'
             }}
         >
+            {/** // TODO: GLOBAL SNACKBAR  */}
             <Snackbar
                 open={error != null}
                 anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
@@ -95,8 +93,8 @@ const LogIn = () => {
                         sx={{
                             display: 'flex', justifyContent: 'center', alignItems: 'center', transition: '0.3s ease', '&:hover': {
                                 transform: 'scale(1.02)',
-                                bgcolor: palette.primary.light,
-                                color: palette.text.primary,
+                                bgcolor: ({ palette }) => palette.primary.light,
+                                color: ({ palette }) => palette.text.primary,
                             }
                         }}
                     >
@@ -117,8 +115,8 @@ const LogIn = () => {
                             transition: '0.3s ease',
                             '&:hover': {
                                 transform: 'scale(1.02)',
-                                bgcolor: palette.primary.light,
-                                color: palette.text.primary,
+                                bgcolor: ({ palette }) => palette.primary.light,
+                                color: ({ palette }) => palette.text.primary,
                             }
                         }}
                     >
@@ -139,8 +137,8 @@ const LogIn = () => {
                             transition: '0.3s ease',
                             '&:hover': {
                                 transform: 'scale(1.02)',
-                                bgcolor: palette.primary.light,
-                                color: palette.text.primary,
+                                bgcolor: ({ palette }) => palette.primary.light,
+                                color: ({ palette }) => palette.text.primary,
                             }
                         }}
                     >

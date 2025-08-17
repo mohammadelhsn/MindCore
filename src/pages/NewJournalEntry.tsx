@@ -29,7 +29,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import Snackbar from '@mui/material/Snackbar';
-import Step from '@mui/material/Step'; Box;
+import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
 import Stepper from '@mui/material/Stepper';
 import TextField from '@mui/material/TextField';
