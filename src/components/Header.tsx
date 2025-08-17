@@ -31,6 +31,8 @@ import { signOut } from 'firebase/auth';
 // ! Why is this even here?
 import { auth } from '../data/Firebase';
 import { useAuth } from '../contexts/useAuth';
+import { MANAGE_ACCOUNT, SETTINGS } from '../data/Routes';
+import { useFeedback } from '../contexts/useFeedback';
 
 const StyledExternalLink = styled(NavLink)(({ theme }) => ({
     color: 'inherit',
@@ -47,16 +49,13 @@ const StyledExternalLink = styled(NavLink)(({ theme }) => ({
 const Header = () => {
     const theme = useTheme();
     const navigate = useNavigate();
+    const { user } = useAuth();
+    const { setFeedback } = useFeedback();
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
     const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
-    const handleClick = (event: MouseEvent<HTMLElement>) => {
-        setAnchorEl(event.currentTarget);
-    };
-    const handleClose = () => {
-        setAnchorEl(null);
-    };
-    const { user } = useAuth();
+    const handleClick = (event: MouseEvent<HTMLElement>) => setAnchorEl(event.currentTarget);
+    const handleClose = () => setAnchorEl(null);
     return (
         <AppBar
             position="static"
@@ -173,16 +172,12 @@ const Header = () => {
                             transformOrigin={{ horizontal: 'right', vertical: 'top' }}
                             anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
                         >
-                            <MenuItem onClick={() => {
-                                navigate('/manageAccount');
-                            }}>
+                            <MenuItem onClick={() => navigate(MANAGE_ACCOUNT)}>
                                 <Avatar src={user.photoURL || undefined}>
                                 </Avatar> Manage my Account
                             </MenuItem>
                             <Divider />
-                            <MenuItem onClick={() => {
-                                navigate('/settings');
-                            }}>
+                            <MenuItem onClick={() => navigate(SETTINGS)}>
                                 <ListItemIcon>
                                     <Settings fontSize="small" color='primary' />
                                 </ListItemIcon>
@@ -190,6 +185,7 @@ const Header = () => {
                             </MenuItem>
                             <MenuItem onClick={() => {
                                 signOut(auth);
+                                setFeedback('Successfully logged out!', 'success');
                             }}>
                                 <ListItemIcon>
                                     <Logout fontSize="small" color='primary' />

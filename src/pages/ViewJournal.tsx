@@ -1,15 +1,15 @@
-/** ========== React & Routing ==========*/
+/** ======= React & Routing ======= */
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
-/** ========== Firebase ========== */
+/** ======= FIREBASE ======= */
 import { doc, updateDoc } from 'firebase/firestore';
 import { db } from '../data/Firebase';
 
-/** ========== Context & Data ========== */
+/** ======= CONTEXT & DATA ======= */
 import { JournalEntry, type firestoreJournalEntry } from '../data/JournalEntry';
 
-/** ========== MUI Components ==========*/
+/** ======= MUI COMPONENTS ======= */
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
@@ -19,11 +19,6 @@ import CardHeader from '@mui/material/CardHeader';
 import Checkbox from '@mui/material/Checkbox';
 import Collapse from '@mui/material/Collapse';
 import Container from '@mui/material/Container';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
 import Divider from '@mui/material/Divider';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import MenuItem from '@mui/material/MenuItem';
@@ -34,7 +29,7 @@ import Tabs from '@mui/material/Tabs';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 
-/** ========== MUI Icons ========== */
+/** ======= MUI ICONS ======= */
 import CategoryIcon from '@mui/icons-material/Category';
 import DeleteIcon from '@mui/icons-material/Delete';
 import DescriptionIcon from '@mui/icons-material/Description';
@@ -45,6 +40,7 @@ import { useAuth } from '../contexts/useAuth';
 import { alignTextIcon, containerStyle, iconStyle } from '../data/Styles';
 import { DASHBOARD } from '../data/Routes';
 import { useFeedback } from '../contexts/useFeedback';
+import DeleteDialog from '../components/DeleteDIalog';
 
 const ViewEntry = () => {
     const { user, userData } = useAuth();
@@ -216,18 +212,7 @@ const ViewEntry = () => {
     */
     return (
         <Container maxWidth="lg" sx={containerStyle}>
-            <Dialog open={openDialog}>
-                <DialogTitle sx={alignTextIcon}>
-                    <DeleteIcon color='error' sx={{ mr: 1 }} />Delete Journal
-                </DialogTitle>
-                <DialogContent>
-                    <DialogContentText>Are you sure you want to delete this?</DialogContentText>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={() => setOpenDialog(false)} >Close</Button>
-                    <Button variant='contained' onClick={handleDelete} color='error'>Delete</Button>
-                </DialogActions>
-            </Dialog>
+            <DeleteDialog openDialog={openDialog} setOpenDialog={setOpenDialog} handleDelete={handleDelete} />
             <Paper sx={{ p: 2 }}>
                 <Tabs value={value} onChange={handleChange} aria-label='Journal Tabs'>
                     <Tab icon={<DescriptionIcon />} label="Content" />

@@ -30,12 +30,11 @@ import Typography from '@mui/material/Typography';
 import { useAuth } from '../contexts/useAuth';
 import { containerStyle } from '../data/Styles';
 import { useFeedback } from '../contexts/useFeedback';
+import { VIEW_ENTRY } from '../data/Routes';
 
 const steps = ['Title', 'Settings & Config'];
 
-
 /** NEW JOURNAL PAGE */
-
 const NewJournalPage = () => {
     const [activeStep, setActiveStep] = useState(0);
     const [title, setTitle] = useState('');
@@ -47,38 +46,30 @@ const NewJournalPage = () => {
     const navigate = useNavigate();
     const handleNext = () => setActiveStep((prev) => Math.min(prev + 1, steps.length - 1));
     const handleBack = () => setActiveStep((prev) => Math.max(prev - 1, 0));
-    const handleSubmit = () => {
-        if (user && userData) {
-            const addJournal = async () => {
-                const newJournalEntry = new JournalEntry({ authorId: userData.uid, title: title, content: '', tags: [], mood: '', passwordProtected: isPrivate, password: password, location: '' });
-                const userRef = doc(db, "users", user.uid);
-                try {
-                    const journals = [];
-                    userData.journals.forEach((j) => {
-                        journals.push(j.toFirestore());
-                    });
-                    journals.push(newJournalEntry.toFirestore());
-                    await updateDoc(userRef, { journals: journals });
-                    userData.journals.push(newJournalEntry);
-                    setFeedback('New journal successfully created', 'success');
-                    navigate(`/viewEntry/${newJournalEntry.id}`);
-                } catch (error) {
-                    setFeedback('Oops, an unexpected error has occurred!', 'error');
-                    console.error(error);
-                }
-            };
-            addJournal();
+    const handleSubmit = async () => {
+        if (!user || !userData) return;
+
+        const newJournalEntry = new JournalEntry({ authorId: userData.uid, title: title, content: '', tags: [], mood: '', passwordProtected: isPrivate, password: password, location: '' });
+        const userRef = doc(db, "users", user.uid);
+        try {
+            const journals = [];
+            journals.push(newJournalEntry.toFirestore());
+            await updateDoc(userRef, { journals: journals });
+            userData.journals.push(newJournalEntry);
+            setFeedback('New journal successfully created', 'success');
+            navigate(VIEW_ENTRY(newJournalEntry.id));
+        } catch (error) {
+            setFeedback('Oops, an unexpected error has occurred!', 'error');
+            console.error(error);
         }
     };
     useEffect(() => {
-        if (!user) {
-            navigate('/login');
-        }
+        if (!user) navigate('/login');
+        return;
     });
-
     return (
         <Container
-            maxWidth="lg"
+            maxWidth="xl"
             sx={containerStyle}>
             <Box sx={{ width: '100%', maxWidth: 600, mx: 'auto', mt: 4 }}>
                 <Stepper activeStep={activeStep} alternativeLabel>

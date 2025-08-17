@@ -6,7 +6,7 @@ const primary = '#6093EA';
 /** Secondary Color */
 const secondary = '#9C27B0';
 
-/** @description Light Theme */
+/** Light Theme */
 export const lightTheme = createTheme({
 	palette: {
 		mode: 'light',
@@ -15,7 +15,7 @@ export const lightTheme = createTheme({
 	},
 });
 
-/** @description Dark Theme */
+/** Dark Theme */
 export const darkTheme = createTheme({
 	palette: {
 		mode: 'dark',

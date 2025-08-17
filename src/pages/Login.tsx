@@ -18,7 +18,7 @@ import { useFeedback } from '../contexts/useFeedback';
 
 /** ======= FUNCTIONS, STYLES, CONSTANTS & TYPES ======= */
 import { handleProviderSignUp } from '../data/Firebase';
-import { containerCenter } from '../data/Styles';
+import { authPagesStyles, containerCenter } from '../data/Styles';
 import { facebookProvider, githubProvider, googleProvider } from '../data/Constants';
 import { DASHBOARD } from '../data/Routes';
 import type { LoginButtonState, ProviderName } from '../data/Types';
@@ -59,13 +59,7 @@ const LogIn = () => {
     return (
         <Container maxWidth="xl" sx={containerCenter}>
             <Paper sx={{ width: '100%', maxWidth: 500, p: 4 }}>
-                <Box
-                    sx={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: 2
-                    }}
-                >
+                <Box sx={authPagesStyles}>
                     <Typography variant="h4">Log In</Typography>
                     <Divider sx={{ mb: 4 }} />
                     <AuthButton provider='google' action='login' handler={handleGoogleSignIn} loading={loadingButton.google} />

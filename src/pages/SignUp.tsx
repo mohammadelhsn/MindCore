@@ -14,7 +14,7 @@ import Typography from '@mui/material/Typography';
 
 /** ========== MUI Hooks ==========*/
 import { useAuth } from '../contexts/useAuth';
-import { containerCenter } from '../data/Styles';
+import { authPagesStyles, containerCenter } from '../data/Styles';
 import { facebookProvider, githubProvider, googleProvider } from '../data/Constants';
 import type { LoginButtonState, ProviderName } from '../data/Types';
 import { useFeedback } from '../contexts/useFeedback';
@@ -52,16 +52,8 @@ const SignUpPage = () => {
     return (
         <Container maxWidth="xl" sx={containerCenter}>
             <Card sx={{ width: '100%', maxWidth: 500, p: 4 }}>
-                <Box
-                    sx={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: 2
-                    }}
-                >
-                    <Typography variant="h4">
-                        Sign Up
-                    </Typography>
+                <Box sx={authPagesStyles}>
+                    <Typography variant="h4">Sign Up</Typography>
                     <Divider sx={{ mb: 4 }} />
                     <AuthButton provider='google' action='signup' handler={handleGoogleSignIn} loading={loadingButton.google} />
                     <AuthButton provider='github' action='signup' handler={handleGitHubSignIn} loading={loadingButton.github} />

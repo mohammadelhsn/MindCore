@@ -49,3 +49,9 @@ export const authButtonStyle = sx({
 		color: ({ palette }) => palette.text.primary,
 	},
 });
+
+export const authPagesStyles = sx({
+	display: 'flex',
+	flexDirection: 'column',
+	gap: 2,
+});

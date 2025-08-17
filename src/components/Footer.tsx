@@ -1,10 +1,8 @@
-// MUI Components
-
-import Typography from '@mui/material/Typography';
+/** ======= MUI COMPONENTS ======= */
 import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
 
-// Footer component
-
+/** Footer Component */
 const Footer = () => {
     return (
         <Box component="footer" textAlign="center" py={4} sx={{

@@ -26,12 +26,21 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import { useAuth } from '../contexts/useAuth';
 import { alignTextIcon, containerStyle, iconStyle } from '../data/Styles';
 import { useFeedback } from '../contexts/useFeedback';
+import type { OverridableComponent } from '@mui/material/OverridableComponent';
+import type { SvgIconTypeMap } from '@mui/material/SvgIcon';
 
 
 interface SettingsProps {
     mode: 'light' | 'dark';
     toggleColorMode: (newMode: 'light' | 'dark') => void;
 }
+
+interface ButtonOption {
+    value: string;
+    icon: OverridableComponent<SvgIconTypeMap<object, "svg">> & { muiName: string; }; // or FC<SVGProps<SVGSVGElement>> if you want strict typing
+    text: string;
+}
+const buttons: ButtonOption[] = [{ value: 'light', icon: LightModeIcon, text: 'Light' }, { value: 'dark', icon: DarkModeIcon, text: 'Dark' }];
 
 const SettingsPage: React.FC<SettingsProps> = ({ mode, toggleColorMode }) => {
     const { user, userData } = useAuth();
@@ -97,18 +106,19 @@ const SettingsPage: React.FC<SettingsProps> = ({ mode, toggleColorMode }) => {
                         size="small"
                         color="primary"
                     >
-                        <ToggleButton value="light">
-                            <LightModeIcon sx={{ mx: 1 }} />
-                            <Typography>Light</Typography>
-                        </ToggleButton>
-                        <ToggleButton value="dark">
-                            <DarkModeIcon sx={{ mx: 1 }} />
-                            <Typography>Dark</Typography>
-                        </ToggleButton>
+                        {buttons.map((btn, index) => {
+                            return (
+                                <ToggleButton value={btn.value} key={`${btn.value}-${index}`}>
+                                    <btn.icon sx={{ mx: 1 }} />
+                                    <Typography>{btn.value}</Typography>
+                                </ToggleButton>
+                            );
+                        })}
                     </ToggleButtonGroup>
                 </CardContent>
             </Card>
         </Container>
     );
 };
+
 export default SettingsPage;

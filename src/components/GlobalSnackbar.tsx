@@ -5,7 +5,6 @@ import Snackbar from '@mui/material/Snackbar';
 /** ======= CONTEXT ======= */
 import { useFeedback } from '../contexts/useFeedback';
 
-
 /** The global snack bar for success, error states */
 const GlobalSnackbar = () => {
     /** ======= GET FEEDBACK CONTEXT ======= */

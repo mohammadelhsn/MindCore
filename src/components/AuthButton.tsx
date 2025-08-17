@@ -1,8 +1,12 @@
+/** ======= MUI COMPONENTS ======= */
 import Button from '@mui/material/Button';
+
+/** ======= STYLES, FUNCTIONS & TYPES ======= */
 import { authButtonStyle } from '../data/Styles';
 import { capitalize } from '../data/Functions';
 import type { AuthButtonProps } from '../data/Types';
 
+/** */
 const AuthButton = (props: AuthButtonProps) => {
     return (
         <Button

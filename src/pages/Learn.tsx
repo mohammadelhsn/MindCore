@@ -12,7 +12,7 @@ import { containerStyle } from '../data/Styles';
 
 const LearnPage = () => {
     return (
-        <Container maxWidth="lg" sx={containerStyle}>
+        <Container maxWidth='xl' sx={containerStyle}>
             <Box>
                 <Typography variant='h2'>Learn</Typography>
                 <Typography variant='h6' sx={{ fontStyle: 'italic' }}>Disclaimer! Learning from this website is not a substitute for real help! If you or a loved one is in danger of harming someone else or yourself, please check out click here</Typography>
@@ -28,7 +28,7 @@ const LearnPage = () => {
                     </CardContent>
                 </Card>
             </Box>
-            <Box my={4}>
+            <Box sx={{ my: 4 }}>
                 <Card>
                     <CardHeader title="What is Anxiety?" />
                     <CardContent>
