@@ -1,5 +1,7 @@
 import type { SxProps, Theme } from '@mui/material';
+import type { User } from 'firebase/auth';
 import type { Dispatch, ReactNode, SetStateAction } from 'react';
+import type { User as UserData } from './User';
 
 export type FeedbackType = 'success' | 'error' | 'info' | 'warning';
 
@@ -50,4 +52,10 @@ export interface PasswordDialogProps {
 	setPasswordError: Dispatch<SetStateAction<string | null>>;
 	journalPassword: string;
 	id: string;
+}
+
+export interface AuthContextType {
+	user: User | null;
+	loading: boolean;
+	userData: UserData | null;
 }

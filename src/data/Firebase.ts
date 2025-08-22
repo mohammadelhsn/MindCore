@@ -56,11 +56,6 @@ export const firebaseErrors: Record<string, string> = {
 
 /**
  * Function that handles Provider sign up
- *
- * @param provider The Provider for Google Auth
- * @param navigate The navigate function
- * @param setError The setter for the error state
- * @param setLoading The setter for the loading state
  */
 export async function handleProviderSignUp(provider: AuthProvider) {
 	try {
