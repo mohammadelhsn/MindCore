@@ -1,6 +1,6 @@
 /** ======= REACT & REACT ROUTER ======= */
 import { useState, useMemo } from 'react';
-import { HashRouter, Route, Routes } from 'react-router-dom';
+import { HashRouter, Navigate, Route, Routes } from 'react-router-dom';
 
 /** ======= MUI COMPONENTS ======= */
 import { CssBaseline, ThemeProvider } from '@mui/material';
@@ -72,6 +72,7 @@ function App() {
               <Route path="/learn" element={<LearnPage />} />
               <Route path="/newEntry" element={<NewJournalPage />} />
               <Route path="/viewEntry/:id" element={<ViewEntry />} />
+              <Route path="*" element={<Navigate to="/" />} />
             </Routes>
             <Footer />
           </AuthProvider>

@@ -211,7 +211,7 @@ const ViewEntry = () => {
     TODO: Add password check on this page in case someone tries to bypass it
     */
     return (
-        <Container maxWidth="lg" sx={containerStyle}>
+        <Container maxWidth="xl" sx={containerStyle}>
             <DeleteDialog openDialog={openDialog} setOpenDialog={setOpenDialog} handleDelete={handleDelete} />
             <Paper sx={{ p: 2 }}>
                 <Tabs value={value} onChange={handleChange} aria-label='Journal Tabs'>

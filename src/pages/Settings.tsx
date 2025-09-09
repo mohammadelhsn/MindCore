@@ -1,5 +1,5 @@
 /** ========== React ========== */
-import { useEffect, type MouseEvent } from 'react';
+import { useEffect, type FC, type MouseEvent } from 'react';
 
 /** ========== React Router ========== */
 import { useNavigate } from 'react-router-dom';
@@ -37,12 +37,12 @@ interface SettingsProps {
 
 interface ButtonOption {
     value: string;
-    icon: OverridableComponent<SvgIconTypeMap<object, "svg">> & { muiName: string; }; // or FC<SVGProps<SVGSVGElement>> if you want strict typing
+    icon: OverridableComponent<SvgIconTypeMap<object, "svg">> & { muiName: string; };
     text: string;
 }
 const buttons: ButtonOption[] = [{ value: 'light', icon: LightModeIcon, text: 'Light' }, { value: 'dark', icon: DarkModeIcon, text: 'Dark' }];
 
-const SettingsPage: React.FC<SettingsProps> = ({ mode, toggleColorMode }) => {
+const SettingsPage: FC<SettingsProps> = ({ mode, toggleColorMode }) => {
     const { user, userData } = useAuth();
     const { setFeedback } = useFeedback();
     const navigate = useNavigate();
@@ -85,7 +85,7 @@ const SettingsPage: React.FC<SettingsProps> = ({ mode, toggleColorMode }) => {
     };
     return (
         <Container
-            maxWidth="lg"
+            maxWidth="xl"
             sx={containerStyle}>
             <Typography variant='h2' sx={alignTextIcon} ><SettingsIcon fontSize='inherit' sx={iconStyle} />Settings</Typography>
             <Divider sx={{ my: 4 }} />

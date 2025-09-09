@@ -15,11 +15,11 @@ export const containerStyle = sx({
 	flexGrow: 1,
 });
 
-export const divCenter = sx({
+export const divCenter = {
 	display: 'flex',
 	alignItems: 'center', // div center
 	justifyContent: 'center',
-});
+};
 
 export const alignTextIcon = sx({
 	display: 'flex',

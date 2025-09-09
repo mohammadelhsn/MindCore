@@ -8,6 +8,8 @@ import Divider from '@mui/material/Divider';
 import Paper from '@mui/material/Paper';
 import Skeleton from '@mui/material/Skeleton';
 import Typography from '@mui/material/Typography';
+
+/** ====== STYLES ====== */
 import { containerStyle } from '../data/Styles';
 
 const LearnPage = () => {

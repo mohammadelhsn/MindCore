@@ -29,7 +29,7 @@ const ManageAccount = () => {
     });
     return (
         <Container
-            maxWidth="lg"
+            maxWidth="xl"
             sx={containerStyle}>
             <Typography variant='h2'>Manage Your Account</Typography>
             <Divider sx={{ my: 4 }} />

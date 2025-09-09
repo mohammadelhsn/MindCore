@@ -9,7 +9,7 @@ import { containerCenter } from '../data/Styles';
 const Welcome = () => {
     return (
         <Container
-            maxWidth="lg"
+            maxWidth="xl"
             sx={containerCenter}
         >
             <Typography variant='h1'>Welcome to MindCore</Typography>

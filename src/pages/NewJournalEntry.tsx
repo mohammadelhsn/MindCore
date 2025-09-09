@@ -27,10 +27,14 @@ import StepLabel from '@mui/material/StepLabel';
 import Stepper from '@mui/material/Stepper';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
+
+/** ========== CONTEXT ========== */
 import { useAuth } from '../contexts/useAuth';
-import { containerStyle } from '../data/Styles';
 import { useFeedback } from '../contexts/useFeedback';
+
+/** ========== DATA ========== */
 import { VIEW_ENTRY } from '../data/Routes';
+import { containerStyle } from '../data/Styles';
 
 const steps = ['Title', 'Settings & Config'];
 
